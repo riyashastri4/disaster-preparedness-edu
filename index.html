@@ -8,7 +8,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
@@ -35,7 +34,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
             <h1>Be Prepared, Stay Safe</h1>
@@ -48,7 +46,6 @@
         </div>
     </section>
 
-    <!-- Education Modules Section -->
     <section id="modules" class="modules-section">
         <div class="container">
             <h2>Interactive Learning Modules</h2>
@@ -116,7 +113,6 @@
         </div>
     </section>
 
-    <!-- Virtual Drills Section -->
     <section id="drills" class="drills-section">
         <div class="container">
             <h2>Virtual Emergency Drills</h2>
@@ -154,7 +150,6 @@
         </div>
     </section>
 
-    <!-- Emergency Contacts Section -->
     <section id="emergency" class="emergency-section">
         <div class="container">
             <h2>Emergency Contacts & Alerts</h2>
@@ -184,8 +179,7 @@
                 <div class="contact-card">
                     <h3>Local Emergency Contacts <span class="contact-city">(<span id="current-city-contacts">Delhi</span>)</span></h3>
                     <div class="contact-list" id="local-contacts">
-                        <!-- Dynamically populated based on location -->
-                    </div>
+                        </div>
                     <div class="contact-actions">
                         <button class="btn btn-secondary" onclick="addLocalContact()">Add Contact</button>
                         <button class="btn btn-secondary" onclick="openCityModal()">Change City</button>
@@ -197,16 +191,15 @@
                     <div class="alerts-list" id="current-alerts">
                         <div class="alert-item low">
                             <i class="fas fa-info-circle"></i>
-                            <span>No current alerts for your region</span>
+                            <span>Real-time alerts will appear here.</span>
                         </div>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="openCityModal()">Change City</button>
+                    <button class="btn btn-primary btn-sm" onclick="triggerDisasterAlarm('natural disaster')">Sound Alarm</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Progress/Gamification Section -->
     <section class="progress-section">
         <div class="container">
             <h2>Your Progress</h2>
@@ -252,7 +245,6 @@
         </div>
     </section>
 
-    <!-- Admin Dashboard Section -->
     <section id="dashboard" class="dashboard-section">
         <div class="container">
             <h2>Administrator Dashboard</h2>
@@ -327,26 +319,21 @@
         </div>
     </section>
 
-    <!-- Module Modal -->
     <div id="module-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <div id="module-content">
-                <!-- Module content will be dynamically loaded here -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- Drill Modal -->
     <div id="drill-modal" class="modal">
         <div class="modal-content">
             <div id="drill-content">
-                <!-- Drill content will be dynamically loaded here -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- City Selection Modal -->
     <div id="city-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -383,7 +370,21 @@
                 </div>
             </div>
         </div>
+    </section>
+
+    <div id="emergency-alarm-overlay" class="alarm-overlay">
+        <div class="alarm-content">
+            <div class="alarm-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h2 class="alarm-title">EMERGENCY ALERT</h2>
+            <p class="alarm-message" id="alarm-message">Natural Disaster Alert!</p>
+            <p class="alarm-instructions">Stay calm, follow official instructions, and seek shelter immediately. Do not panic.</p>
+            <button class="btn btn-secondary alarm-button" onclick="stopEmergencyAlarm()">OK, I Understand</button>
+        </div>
     </div>
+    
+    <audio id="emergency-alarm-audio" loop preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-emergency-alert-995.mp3" type="audio/mpeg">
+    </audio>
 
     <script src="js/main.js"></script>
 </body>
