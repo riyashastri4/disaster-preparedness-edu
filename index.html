@@ -17,7 +17,6 @@
             <div class="nav-menu">
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#modules" class="nav-link">Learn</a>
-                <a href="#drills" class="nav-link">Virtual Drills</a>
                 <a href="#emergency" class="nav-link">Emergency</a>
                 <a href="#dashboard" class="nav-link">Dashboard</a>
                 <div class="nav-city" onclick="openCityModal()">
@@ -109,43 +108,22 @@
                     </div>
                     <button class="btn btn-module" onclick="startModule('cyclone')">Start Module</button>
                 </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="drills" class="drills-section">
-        <div class="container">
-            <h2>Virtual Emergency Drills</h2>
-            <div class="drills-grid">
-                <div class="drill-card">
-                    <h3>Earthquake Drill</h3>
-                    <p>Practice the Drop, Cover, and Hold procedure with timed scenarios</p>
-                    <div class="drill-info">
-                        <span><i class="fas fa-clock"></i> 5 minutes</span>
-                        <span><i class="fas fa-users"></i> Individual/Group</span>
+                <div class="module-card" data-module="first-aid">
+                    <div class="module-icon">
+                        <i class="fas fa-medkit"></i>
                     </div>
-                    <button class="btn btn-drill" onclick="startDrill('earthquake')">Start Drill</button>
+                    <h3>First Aid Basics</h3>
+                    <p>Learn to respond to common injuries and medical emergencies before professional help arrives.</p>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text">0% Complete</span>
+                    </div>
+                    <button class="btn btn-module" onclick="startModule('first-aid')">Start Module</button>
                 </div>
 
-                <div class="drill-card">
-                    <h3>Fire Evacuation</h3>
-                    <p>Navigate through a virtual building during a fire emergency</p>
-                    <div class="drill-info">
-                        <span><i class="fas fa-clock"></i> 7 minutes</span>
-                        <span><i class="fas fa-users"></i> Group Activity</span>
-                    </div>
-                    <button class="btn btn-drill" onclick="startDrill('fire')">Start Drill</button>
-                </div>
-
-                <div class="drill-card">
-                    <h3>Flood Response</h3>
-                    <p>Learn evacuation procedures and emergency communication</p>
-                    <div class="drill-info">
-                        <span><i class="fas fa-clock"></i> 6 minutes</span>
-                        <span><i class="fas fa-users"></i> Individual/Group</span>
-                    </div>
-                    <button class="btn btn-drill" onclick="startDrill('flood')">Start Drill</button>
-                </div>
             </div>
         </div>
     </section>
@@ -191,10 +169,10 @@
                     <div class="alerts-list" id="current-alerts">
                         <div class="alert-item low">
                             <i class="fas fa-info-circle"></i>
-                            <span>Real-time alerts will appear here.</span>
+                            <span>No current alerts for your region</span>
                         </div>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="triggerDisasterAlarm('natural disaster')">Sound Alarm</button>
+                    <button class="btn btn-secondary btn-sm" onclick="openCityModal()">Change City</button>
                 </div>
             </div>
         </div>
