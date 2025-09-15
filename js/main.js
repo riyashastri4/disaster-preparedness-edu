@@ -16,16 +16,12 @@ const AppState = {
     emergencyContacts: []
 };
 
-// WebSocket connection
-let ws = null;
-
 // Educational Modules Data
 const ModulesData = {
     earthquake: {
         title: 'Earthquake Safety',
         icon: 'fas fa-mountain',
         description: 'Learn Drop, Cover, and Hold techniques',
-        videoUrl: 'https://www.youtube.com/embed/SiB0qRJq_h0',
         lessons: [
             {
                 id: 1,
@@ -131,7 +127,6 @@ const ModulesData = {
         title: 'Flood Preparedness',
         icon: 'fas fa-water',
         description: 'Emergency evacuation and water safety',
-        videoUrl: 'https://www.youtube.com/embed/Glc-1f4Ez00',
         lessons: [
             {
                 id: 1,
@@ -208,15 +203,6 @@ const ModulesData = {
                         <li>Stay away from electrical equipment when wet</li>
                         <li>Don't drive through flooded areas</li>
                         <li>Avoid contact with flood water (contamination risk)</li>
-                        </ul>
-                    </div>
-                    
-                    <h3>Water Safety Rules</h3>
-                    <ul>
-                        <li>Turn around, don't drown - avoid flooded roads</li>
-                        <li>Stay away from electrical equipment when wet</li>
-                        <li>Don't drive through flooded areas</li>
-                        <li>Avoid contact with flood water (contamination risk)</li>
                     </ul>
                 `,
                 duration: 8
@@ -272,7 +258,6 @@ const ModulesData = {
         title: 'Fire Safety',
         icon: 'fas fa-fire',
         description: 'Fire extinguisher use and escape routes',
-        videoUrl: 'https://www.youtube.com/embed/cnn-yvszLXE',
         lessons: [
             {
                 id: 1,
@@ -457,7 +442,6 @@ const ModulesData = {
         title: 'Cyclone Preparedness',
         icon: 'fas fa-wind',
         description: 'Understanding cyclone warnings and safe shelters',
-        videoUrl: 'https://www.youtube.com/embed/Li1ysRexTY8',
         lessons: [
             {
                 id: 1,
@@ -881,8 +865,6 @@ let currentQuiz = null;
 let currentQuestionIndex = 0;
 let quizAnswers = [];
 let quizScore = 0;
-let emergencyAlarmActive = false;
-let userLocation = null;
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', function() {
@@ -891,8 +873,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserProgress();
     animateStats();
     populateLocalContacts();
-    connectWebSocket();
-    getUserLocation();
 });
 
 function initializeApp() {
@@ -985,42 +965,15 @@ function startModule(moduleType) {
 
 function generateModuleContent(moduleType, lessonIndex) {
     const module = AppState.modules[moduleType];
-    
-    // Add video tutorial as the first "lesson"
-    if (lessonIndex === 0 && module.videoUrl) {
-        return `
-            <div class="module-header">
-                <h2><i class="${module.icon}"></i> ${module.title}</h2>
-                <div class="lesson-progress">
-                    <span>Video Tutorial</span>
-                    <div class="lesson-progress-bar">
-                        <div class="lesson-progress-fill" style="width: 100%"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="video-container">
-                <iframe src="${module.videoUrl}" title="${module.title} Video Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class="lesson-navigation">
-                <div class="lesson-timer">
-                    <i class="fas fa-video"></i>
-                    <span>Watch before proceeding</span>
-                </div>
-                <button class="btn btn-primary" onclick="nextLesson()">Start Learning</button>
-            </div>
-        `;
-    }
-    
-    const lesson = module.lessons[lessonIndex > 0 ? lessonIndex - 1 : 0]; // Adjust index for video lesson
-    const totalLessons = module.lessons.length;
+    const lesson = module.lessons[lessonIndex];
     
     return `
         <div class="module-header">
             <h2><i class="${module.icon}"></i> ${module.title}</h2>
             <div class="lesson-progress">
-                <span>Lesson ${lessonIndex} of ${totalLessons}</span>
+                <span>Lesson ${lessonIndex + 1} of ${module.lessons.length}</span>
                 <div class="lesson-progress-bar">
-                    <div class="lesson-progress-fill" style="width: ${((lessonIndex) / totalLessons) * 100}%"></div>
+                    <div class="lesson-progress-fill" style="width: ${((lessonIndex + 1) / module.lessons.length) * 100}%"></div>
                 </div>
             </div>
         </div>
@@ -1033,12 +986,12 @@ function generateModuleContent(moduleType, lessonIndex) {
         </div>
         
         <div class="lesson-navigation">
-            ${lessonIndex > 1 ? `<button class="btn btn-secondary" onclick="previousLesson()">Previous</button>` : ''}
+            ${lessonIndex > 0 ? `<button class="btn btn-secondary" onclick="previousLesson()">Previous</button>` : ''}
             <div class="lesson-timer">
                 <i class="fas fa-clock"></i>
                 <span>${lesson.duration} min</span>
             </div>
-            ${lessonIndex < totalLessons ? 
+            ${lessonIndex < module.lessons.length - 1 ? 
                 `<button class="btn btn-primary" onclick="nextLesson()">Next Lesson</button>` : 
                 `<button class="btn btn-primary" onclick="startQuiz()">Take Quiz</button>`
             }
@@ -1048,7 +1001,7 @@ function generateModuleContent(moduleType, lessonIndex) {
 
 function nextLesson() {
     const module = AppState.modules[currentModule];
-    if (currentLesson < module.lessons.length) { // Check for total lessons including video
+    if (currentLesson < module.lessons.length - 1) {
         currentLesson++;
         const content = document.getElementById('module-content');
         content.innerHTML = generateModuleContent(currentModule, currentLesson);
@@ -1928,9 +1881,23 @@ function loadCurrentAlerts(cityName) {
     const alertsList = document.getElementById('current-alerts');
     if (!alertsList) return;
     
-    // This is now just a placeholder for the real-time alerts.
-    const alerts = [
-        { type: 'info', message: 'Real-time alerts will appear here.', severity: 'low' }
+    // Sample alerts - in real implementation, this would come from an API
+    const mockAlerts = {
+        'Delhi': [
+            { type: 'info', message: 'Air quality moderate today. Avoid outdoor activities if sensitive.', severity: 'low' },
+            { type: 'weather', message: 'Light rain expected in evening. Keep umbrellas ready.', severity: 'low' }
+        ],
+        'Mumbai': [
+            { type: 'weather', message: 'Heavy rain alert for next 24 hours. Avoid waterlogged areas.', severity: 'medium' },
+            { type: 'traffic', message: 'Local train delays due to weather conditions.', severity: 'low' }
+        ],
+        'Bangalore': [
+            { type: 'info', message: 'No major alerts currently. Stay prepared and informed.', severity: 'low' }
+        ]
+    };
+    
+    const alerts = mockAlerts[cityName] || [
+        { type: 'info', message: `No current alerts for ${cityName}. Stay safe and prepared.`, severity: 'low' }
     ];
     
     alertsList.innerHTML = alerts.map(alert => `
@@ -1974,122 +1941,6 @@ function loadUserProgress() {
         AppState.currentUser.city = 'Delhi';
         loadEmergencyData();
     }
-}
-
-// Emergency Alert System (Real-time WebSockets)
-const alertSound = document.getElementById('emergency-alarm-audio');
-const emergencyOverlay = document.getElementById('emergency-alarm-overlay');
-
-function connectWebSocket() {
-    // Determine WebSocket URL based on location
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
-    
-    ws = new WebSocket(wsUrl);
-
-    ws.onopen = () => {
-        console.log('WebSocket connection established.');
-        // Send initial location if available
-        if (userLocation) {
-            sendLocationToServer();
-        }
-    };
-
-    ws.onmessage = event => {
-        const message = JSON.parse(event.data);
-        if (message.type === 'emergency-alert') {
-            showEmergencyAlarm(message.message);
-        }
-    };
-
-    ws.onclose = () => {
-        console.log('WebSocket connection closed. Attempting to reconnect...');
-        setTimeout(connectWebSocket, 5000); // Reconnect after 5 seconds
-    };
-
-    ws.onerror = error => {
-        console.error('WebSocket error:', error);
-    };
-}
-
-function sendLocationToServer() {
-    if (ws && ws.readyState === WebSocket.OPEN && userLocation) {
-        const message = {
-            type: 'location-update',
-            location: userLocation
-        };
-        ws.send(JSON.stringify(message));
-    }
-}
-
-function getUserLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            userLocation = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            };
-            console.log('User location obtained:', userLocation);
-            sendLocationToServer();
-        }, error => {
-            console.error('Geolocation error:', error);
-            alert('Please enable location services to receive localized alerts.');
-        });
-    } else {
-        console.log('Geolocation is not supported by this browser.');
-    }
-}
-
-function triggerDisasterAlarm(disasterType) {
-    if (!userLocation) {
-        alert('Cannot trigger alarm. Location is not available. Please enable location services and try again.');
-        return;
-    }
-
-    // Send a request to the server to trigger the alarm
-    fetch('/api/trigger-alarm', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userId: AppState.currentUser.id,
-            disasterType,
-            location: userLocation
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Alarm triggered successfully! Alerts sent to nearby users.');
-        } else {
-            alert('Failed to trigger alarm: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error triggering alarm:', error);
-        alert('An error occurred while trying to trigger the alarm.');
-    });
-}
-
-function showEmergencyAlarm(message) {
-    if (emergencyAlarmActive) return;
-    
-    emergencyAlarmActive = true;
-    emergencyOverlay.style.display = 'flex';
-    document.getElementById('alarm-message').textContent = message;
-    
-    // Play the alarm sound
-    alertSound.play().catch(error => {
-        console.error('Failed to play audio:', error);
-    });
-}
-
-function stopEmergencyAlarm() {
-    emergencyOverlay.style.display = 'none';
-    emergencyAlarmActive = false;
-    alertSound.pause();
-    alertSound.currentTime = 0; // Rewind to the start
 }
 
 // Error Handling
