@@ -610,6 +610,97 @@ const ModulesData = {
                 duration: 8
             }
         ]
+    },
+    'first-aid': {
+        title: 'First Aid Basics',
+        icon: 'fas fa-medkit',
+        description: 'Learn to respond to common injuries and medical emergencies before professional help arrives.',
+        lessons: [
+            {
+                id: 1,
+                title: 'Introduction to First Aid',
+                content: `
+                    <h3>The Basics of First Aid</h3>
+                    <p>First aid is the immediate assistance given to a person who is injured or suddenly ill. Its main goals are to preserve life, prevent the condition from worsening, and promote recovery.</p>
+                    
+                    <h4>The "Three P's" of First Aid:</h4>
+                    <ol>
+                        <li><strong>Preserve Life:</strong> Your first priority is to save the life of the person in danger.</li>
+                        <li><strong>Prevent Worsening:</strong> Take steps to stop the person's condition from getting worse.</li>
+                        <li><strong>Promote Recovery:</strong> Help the person to get better by making them comfortable and providing initial care.</li>
+                    </ol>
+                    
+                    <h4>Your First Aid Kit:</h4>
+                    <p>A basic first aid kit should contain:</p>
+                    <ul>
+                        <li>Bandages and adhesive tapes</li>
+                        <li>Antiseptic wipes and hand sanitizer</li>
+                        <li>Gauze pads and sterile dressings</li>
+                        <li>Scissors, tweezers, and safety pins</li>
+                        <li>Pain relievers and allergy medication</li>
+                        <li>Emergency contact numbers</li>
+                    </ul>
+                `,
+                duration: 7
+            },
+            {
+                id: 2,
+                title: 'Cuts, Wounds, and Bleeding',
+                content: `
+                    <h3>Handling Cuts and Wounds</h3>
+                    <p>Properly treating a wound is essential to prevent infection and control bleeding.</p>
+                    
+                    <h4>Steps to Treat a Minor Cut:</h4>
+                    <ol>
+                        <li><strong>Wash Your Hands:</strong> Use soap and water to clean your hands before touching the wound.</li>
+                        <li><strong>Clean the Wound:</strong> Gently wash the wound with clean water and mild soap.</li>
+                        <li><strong>Apply Pressure:</strong> Use a clean cloth or gauze to apply gentle pressure to stop the bleeding.</li>
+                        <li><strong>Apply Dressing:</strong> Once the bleeding stops, apply a sterile dressing or bandage.</li>
+                    </ol>
+                    
+                    <h4>Controlling Severe Bleeding:</h4>
+                    <ul>
+                        <li><strong>Apply Firm Pressure:</strong> Use a clean cloth and press down firmly on the wound.</li>
+                        <li><strong>Elevate the Limb:</strong> If the wound is on an arm or leg, raise it above the level of the heart.</li>
+                        <li><strong>Maintain Pressure:</strong> Do not remove the cloth. Add more layers if blood soaks through.</li>
+                        <li><strong>Call for Help:</strong> Immediately call for professional medical help (e.g., dial 108).</li>
+                    </ul>
+                `,
+                duration: 9
+            },
+            {
+                id: 3,
+                title: 'Sprains, Burns, and Broken Bones',
+                content: `
+                    <h3>Responding to Common Injuries</h3>
+                    
+                    <h4>Sprains and Strains:</h4>
+                    <p>Use the **R.I.C.E.** method for sprains:</p>
+                    <ul>
+                        <li><strong>R - Rest:</strong> Stop using the injured part.</li>
+                        <li><strong>I - Ice:</strong> Apply an ice pack wrapped in a cloth for 20 minutes every 2-3 hours.</li>
+                        <li><strong>C - Compression:</strong> Wrap the area with a bandage to reduce swelling.</li>
+                        <li><strong>E - Elevation:</strong> Keep the injured area raised above the heart level.</li>
+                    </ul>
+                    
+                    <h4>Burns:</h4>
+                    <ul>
+                        <li><strong>Cool the Burn:</strong> Hold the burned area under cool running water for 10-20 minutes.</li>
+                        <li><strong>Remove Clothing:</strong> Gently remove any clothing or jewelry from the burn area.</li>
+                        <li><strong>Cover the Burn:</strong> Use a non-stick sterile bandage to cover the burn.</li>
+                        <li><strong>Seek Medical Help:</strong> For severe burns, seek professional medical help immediately.</li>
+                    </ul>
+                    
+                    <h4>Broken Bones:</h4>
+                    <ul>
+                        <li><strong>Don't Move the Person:</strong> Unless they are in immediate danger, do not move them.</li>
+                        <li><strong>Immobilize the Injury:</strong> Use a splint or bandage to keep the bone still.</li>
+                        <li><strong>Call for Help:</strong> Call emergency services immediately.</li>
+                    </ul>
+                `,
+                duration: 10
+            }
+        ]
     }
 };
 
@@ -854,6 +945,66 @@ const QuizData = {
                 explanation: 'Essential supplies include first aid kit, flashlight, battery-powered radio, extra batteries, and emergency contacts.'
             }
         ]
+    },
+    'first-aid': {
+        title: 'First Aid Basics Quiz',
+        questions: [
+            {
+                question: 'What is the first step when treating a minor cut?',
+                options: [
+                    'Apply a bandage immediately',
+                    'Apply pressure to the wound',
+                    'Wash your hands with soap and water',
+                    'Apply an antiseptic cream'
+                ],
+                correct: 2,
+                explanation: 'The first step is always to wash your hands to prevent infection from spreading to the wound.'
+            },
+            {
+                question: 'What does the "I" stand for in the R.I.C.E. method for sprains?',
+                options: [
+                    'Immobilize',
+                    'Ice',
+                    'Inspect',
+                    'Ignore'
+                ],
+                correct: 1,
+                explanation: 'R.I.C.E. stands for Rest, Ice, Compression, and Elevation. "I" is for ice.'
+            },
+            {
+                question: 'For a severe burn, what should you do immediately after calling for help?',
+                options: [
+                    'Apply butter or oil to the burn',
+                    'Cover the burn with a non-stick sterile bandage',
+                    'Pop any blisters that form',
+                    'Hold the burned area under cool running water'
+                ],
+                correct: 3,
+                explanation: 'The most important immediate step for a severe burn is to cool it with running water to stop the burning process and reduce pain.'
+            },
+            {
+                question: 'What is the first goal of first aid?',
+                options: [
+                    'Promote recovery',
+                    'Prevent the condition from worsening',
+                    'Preserve life',
+                    'Transport the victim to a hospital'
+                ],
+                correct: 2,
+                explanation: 'The primary goal of first aid is always to preserve the victim\'s life.'
+            },
+            {
+                question: 'What should you NOT do when a person has a broken bone?',
+                options: [
+                    'Immobilize the injured area',
+                    'Move the person to a more comfortable position',
+                    'Call emergency services',
+                    'Keep the person warm'
+                ],
+                correct: 1,
+                explanation: 'You should not move a person with a broken bone unless they are in immediate danger, as this could cause further injury.'
+            }
+        ]
     }
 };
 
@@ -941,15 +1092,6 @@ function setupEventListeners() {
 function startLearning() {
     document.querySelector('#modules').scrollIntoView({ behavior: 'smooth' });
 }
-
-function takeQuickDrill() {
-    document.querySelector('#drills').scrollIntoView({ behavior: 'smooth' });
-}
-
-function startDrill(drillType) {
-    alert(`Starting ${drillType} drill!\n\nThis is a simulation to practice emergency procedures.\n\nIn a real emergency, follow your school's evacuation plan and listen to teachers and authorities.`);
-}
-
 
 function startModule(moduleType) {
     currentModule = moduleType;
