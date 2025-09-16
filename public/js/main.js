@@ -1145,6 +1145,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeWebSocket();
 });
 
+// REPLACE your existing setupEventListeners function with this one
+
 function setupEventListeners() {
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
@@ -1156,20 +1158,34 @@ function setupEventListeners() {
         });
     }
     
-    // Modal close buttons
-    document.querySelectorAll('.close').forEach(closeBtn => {
-        closeBtn.addEventListener('click', closeModal);
-    });
+    // --- START: CORRECTED MODAL CLOSE LOGIC ---
     
-    // Close modal on outside click
+    // This function will handle closing any active modal
+    const closeActiveModal = () => {
+        const activeModal = document.querySelector('.modal[style*="display: block"]');
+        if (activeModal) {
+            activeModal.style.display = 'none';
+        }
+    };
+
+    // Listen for clicks on ANY element with the class "close"
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('close')) {
+            closeActiveModal();
+        }
+    });
+
+    // Listen for clicks on the modal background to close it
     document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
+        modal.addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeActiveModal();
             }
         });
     });
-    
+
+    // --- END: CORRECTED MODAL CLOSE LOGIC ---
+
     // Intersection Observer for animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
