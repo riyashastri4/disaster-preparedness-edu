@@ -1139,12 +1139,6 @@ function stopEmergencyAlarm() {
     }
 }
 
-// Call this function when the app initializes
-document.addEventListener('DOMContentLoaded', function() {
-    // ... your existing initializtion code
-    initializeWebSocket();
-});
-
 // REPLACE your existing setupEventListeners function with this one
 
 function setupEventListeners() {
