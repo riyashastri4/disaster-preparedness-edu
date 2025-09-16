@@ -2173,3 +2173,44 @@ if ('serviceWorker' in navigator) {
         // navigator.serviceWorker.register('/sw.js');
     });
 }
+// PASTE THIS ENTIRE CODE SNIPPET AT THE END OF main.js
+
+function sendTestAlarm() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const location = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            };
+
+            fetch('/api/trigger-alarm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: AppState.currentUser.id, // Or a unique user ID
+                    disasterType: 'Test Disaster',
+                    location: location
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Alarm triggered! ${data.alertsSent} user(s) notified.`);
+                } else {
+                    alert('Failed to trigger alarm.');
+                }
+            })
+            .catch(error => {
+                console.error('Error triggering alarm:', error);
+                alert('An error occurred while triggering the alarm.');
+            });
+        }, error => {
+            console.error('Error getting location for alarm:', error);
+            alert('Could not get your location to send an alarm. Please allow location access.');
+        });
+    } else {
+        alert('Geolocation is not supported by your browser.');
+    }
+}
