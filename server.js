@@ -16,7 +16,7 @@ app.use(express.static('public'));
 // In-memory data store for connected clients and user data
 const clients = new Map();
 let userData = {};
-let emergencyAlerts = []; // Store alerts for history/display purposes
+let emergencyAlerts = [];
 
 // Create an HTTP server and a WebSocket server
 const server = http.createServer(app);
@@ -97,7 +97,7 @@ app.post('/api/trigger-alarm', (req, res) => {
                 location.latitude,
                 location.longitude,
                 client.location.latitude,
-                client.location.longitude
+                location.longitude
             );
 
             if (distance <= radius) {
