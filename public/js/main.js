@@ -1049,6 +1049,81 @@ function initializeApp() {
     });
 }
 
+// Add this to your public/js/main.js file
+
+function initializeWebSocket() {
+    // Connect to the WebSocket server
+    // Use wss:// for a secure connection if your site is on HTTPS
+    const ws = new WebSocket(`ws://${window.location.host}`);
+
+    ws.onopen = () => {
+        console.log('Connected to WebSocket server');
+        // Get user's location and send it to the server
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const location = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                };
+                ws.send(JSON.stringify({ type: 'location-update', location }));
+            }, error => {
+                console.error('Error getting location:', error);
+            });
+        }
+    };
+
+    ws.onmessage = event => {
+        try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'emergency-alert') {
+                console.log('Emergency alert received:', data.message);
+                triggerEmergencyAlarm(data.message);
+            }
+        } catch (error) {
+            console.error('Error parsing WebSocket message:', error);
+        }
+    };
+
+    ws.onclose = () => {
+        console.log('Disconnected from WebSocket server. Attempting to reconnect...');
+        // Optional: attempt to reconnect after a delay
+        setTimeout(initializeWebSocket, 5000);
+    };
+
+    ws.onerror = error => {
+        console.error('WebSocket error:', error);
+    };
+}
+
+function triggerEmergencyAlarm(message) {
+    const alarmOverlay = document.getElementById('emergency-alarm-overlay');
+    const alarmMessage = document.getElementById('alarm-message');
+    const alarmAudio = document.getElementById('emergency-alarm-audio');
+
+    if (alarmOverlay && alarmMessage && alarmAudio) {
+        alarmMessage.textContent = message || 'Natural Disaster Alert!';
+        alarmOverlay.style.display = 'flex';
+        alarmAudio.play();
+    }
+}
+
+function stopEmergencyAlarm() {
+    const alarmOverlay = document.getElementById('emergency-alarm-overlay');
+    const alarmAudio = document.getElementById('emergency-alarm-audio');
+
+    if (alarmOverlay && alarmAudio) {
+        alarmOverlay.style.display = 'none';
+        alarmAudio.pause();
+        alarmAudio.currentTime = 0; // Reset audio
+    }
+}
+
+// Call this function when the app initializes
+document.addEventListener('DOMContentLoaded', function() {
+    // ... your existing initializtion code
+    initializeWebSocket();
+});
+
 function setupEventListeners() {
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
