@@ -28,7 +28,7 @@ const ModulesData = {
             {
                 id: 1,
                 title: 'Understanding Earthquakes',
-                videoUrl: 'https://www.youtube.com/embed/G_NUzYmY3ww',
+                videoUrl: 'https://www.youtube.com/embed/MKILThtPxQs?si=bFegjH4mgnk6FwEa',
                 content: `
                     <h3>What is an Earthquake?</h3>
                     <p>An earthquake is the sudden release of energy stored in the Earth's crust, creating seismic waves. India experiences frequent earthquakes due to its location at the collision zone of tectonic plates.</p>
@@ -134,7 +134,7 @@ const ModulesData = {
             {
                 id: 1,
                 title: 'Understanding Flood Risks',
-                videoUrl: 'https://www.youtube.com/embed/4-67v_M2js4',
+                videoUrl: 'https://www.youtube.com/embed/43M5mZuzHF8?si=wcIAT5sAbEAATL-g',
                 content: `
                     <h3>Types of Floods in India</h3>
                     
@@ -266,7 +266,7 @@ const ModulesData = {
             {
                 id: 1,
                 title: 'Fire Prevention and Awareness',
-                videoUrl: 'https://www.youtube.com/embed/6i-U_240MvA',
+                videoUrl: 'https://www.youtube.com/embed/GVBamXXVD30?si=FoYR16qNgQtosoDZ',
                 content: `
                     <h3>Common Causes of School Fires</h3>
                     
@@ -451,7 +451,7 @@ const ModulesData = {
             {
                 id: 1,
                 title: 'Understanding Cyclones',
-                videoUrl: 'https://www.youtube.com/embed/GlzY_t4GLhM',
+                videoUrl: 'https://www.youtube.com/embed/Li1ysRexTY8?si=S9HOEoOFTTOpQOfs',
                 content: `
                     <h3>Cyclones in India</h3>
                     
@@ -626,7 +626,7 @@ const ModulesData = {
                 id: 1,
                 title: 'Introduction to First Aid',
                 // ADDED: First Aid Video
-                videoUrl: 'https://www.youtube.com/embed/z-2_S3tYn_4',
+                videoUrl: 'https://www.youtube.com/embed/0JHNvpQ9JW8?si=hTTWPJWdNjOYQmTq',
                 content: `
                     <h3>The Basics of First Aid</h3>
                     <p>First aid is the immediate assistance given to a person who is injured or suddenly ill. Its main goals are to preserve life, prevent the condition from worsening, and promote recovery.</p>
