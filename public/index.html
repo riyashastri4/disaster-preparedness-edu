@@ -127,63 +127,59 @@
         </div>
     </section>
 
-    <section id="emergency" class="emergency-section">
-        <div class="container">
-            <h2>Emergency Contacts & Alerts</h2>
-            <div class="emergency-grid">
-                <div class="contact-card urgent">
-                    <h3>National Emergency Numbers</h3>
-                    <div class="contact-list">
-                        <div class="contact-item">
-                            <span class="contact-name">National Disaster Response</span>
-                            <span class="contact-number">1078</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Fire Service</span>
-                            <span class="contact-number">101</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Police</span>
-                            <span class="contact-number">100</span>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-name">Medical Emergency</span>
-                            <span class="contact-number">108</span>
-                        </div>
+   <section id="emergency" class="emergency-section">
+    <div class="container">
+        <h2>Emergency Contacts & Alerts</h2>
+        <div class="emergency-grid">
+            <div class="contact-card urgent">
+                <h3>National Emergency Numbers</h3>
+                <div class="contact-list">
+                    <div class="contact-item">
+                        <span class="contact-name">National Disaster Response</span>
+                        <span class="contact-number">1078</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-name">Fire Service</span>
+                        <span class="contact-number">101</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-name">Police</span>
+                        <span class="contact-number">100</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-name">Medical Emergency</span>
+                        <span class="contact-number">108</span>
                     </div>
                 </div>
+            </div>
 
-                <div class="contact-card">
-                    <h3>Local Emergency Contacts <span class="contact-city">(<span id="current-city-contacts">Delhi</span>)</span></h3>
-                    <div class="contact-list" id="local-contacts">
-                        </div>
-                    <div class="contact-actions">
-                        <button class="btn btn-secondary" onclick="addLocalContact()">Add Contact</button>
-                        <button class="btn btn-secondary" onclick="openCityModal()">Change City</button>
+            <div class="contact-card">
+                <h3>Local Emergency Contacts <span class="contact-city">(<span id="current-city-contacts">Delhi</span>)</span></h3>
+                <div class="contact-list" id="local-contacts">
                     </div>
+                <div class="contact-actions">
+                    <button class="btn btn-secondary" onclick="addLocalContact()">Add Contact</button>
+                    <button class="btn btn-secondary" onclick="openCityModal()">Change City</button>
                 </div>
+            </div>
 
-                <div class="alert-card">
-                    <h3>Current Alerts <span class="alert-city">(<span id="current-city-alerts">Delhi</span>)</span></h3>
-                    <div class="alerts-list" id="current-alerts">
-                        <div class="alert-item low">
-                            <i class="fas fa-info-circle"></i>
-                            <span>No current alerts for your region</span>
-                        </div>
+            <div class="alert-card">
+                <h3>Current Alerts <span class="alert-city">(<span id="current-city-alerts">Delhi</span>)</span></h3>
+                <div class="alerts-list" id="current-alerts">
+                    <div class="alert-item low">
+                        <i class="fas fa-info-circle"></i>
+                        <span>No current alerts for your region</span>
                     </div>
-                    <button class="btn btn-secondary btn-sm" onclick="openCityModal()">Change City</button>
                 </div>
+                <button class="btn btn-secondary btn-sm" onclick="openCityModal()">Change City</button>
             </div>
         </div>
-        <button class="btn btn-secondary btn-sm" onclick="openCityModal()">Change City</button>
-                </div>
-            </div>
 
-            <div style="text-align: center; margin-top: 40px;">
-                 <button class="btn btn-danger" onclick="sendTestAlarm()" style="background-color: #e74c3c; border: none;">Trigger Test Alarm</button>
-            </div>
-            </div>
-    </section>
+        <div style="text-align: center; margin-top: 40px;">
+             <button class="btn btn-danger" onclick="sendTestAlarm()" style="background-color: #e74c3c; border: none;">Trigger Test Alarm</button>
+        </div>
+    </div>
+</section>
     <section class="progress-section">
         <div class="container">
             <h2>Your Progress</h2>
