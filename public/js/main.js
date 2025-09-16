@@ -1201,10 +1201,24 @@ function startModule(moduleType) {
     currentModal = modal;
 }
 
+// REPLACE your existing generateModuleContent function with this one
+
 function generateModuleContent(moduleType, lessonIndex) {
     const module = AppState.modules[moduleType];
     const lesson = module.lessons[lessonIndex];
-    
+
+    // Check if there is a video URL and create the video player HTML
+    const videoPlayer = lesson.videoUrl ? `
+        <div class="video-container">
+            <iframe 
+                src="${lesson.videoUrl}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+    ` : '';
+
     return `
         <div class="module-header">
             <h2><i class="${module.icon}"></i> ${module.title}</h2>
@@ -1218,7 +1232,7 @@ function generateModuleContent(moduleType, lessonIndex) {
         
         <div class="lesson-content">
             <h3>${lesson.title}</h3>
-            <div class="lesson-body">
+            ${videoPlayer} <div class="lesson-body">
                 ${lesson.content}
             </div>
         </div>
