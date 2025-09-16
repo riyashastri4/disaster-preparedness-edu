@@ -1051,25 +1051,37 @@ function initializeApp() {
 
 // Add this to your public/js/main.js file
 
+// REPLACE the old initializeWebSocket function with this new one
+
 function initializeWebSocket() {
-    // Connect to the WebSocket server
-    // Use wss:// for a secure connection if your site is on HTTPS
-    const ws = new WebSocket(`ws://${window.location.host}`);
+    // 1. Force a secure WebSocket connection (wss)
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}`;
+    const ws = new WebSocket(wsUrl);
+    let keepAliveInterval;
 
     ws.onopen = () => {
         console.log('Connected to WebSocket server');
-        // Get user's location and send it to the server
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 const location = {
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
                 };
-                ws.send(JSON.stringify({ type: 'location-update', location }));
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: 'location-update', location }));
+                }
             }, error => {
                 console.error('Error getting location:', error);
             });
         }
+
+        // 2. Start sending a "ping" every 25 seconds to keep the connection alive
+        keepAliveInterval = setInterval(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'ping' }));
+            }
+        }, 25000); // 25 seconds
     };
 
     ws.onmessage = event => {
@@ -1086,12 +1098,13 @@ function initializeWebSocket() {
 
     ws.onclose = () => {
         console.log('Disconnected from WebSocket server. Attempting to reconnect...');
-        // Optional: attempt to reconnect after a delay
+        clearInterval(keepAliveInterval); // Stop the ping when disconnected
         setTimeout(initializeWebSocket, 5000);
     };
 
     ws.onerror = error => {
         console.error('WebSocket error:', error);
+        clearInterval(keepAliveInterval); // Stop ping on error
     };
 }
 
