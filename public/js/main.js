@@ -1154,33 +1154,29 @@ function setupEventListeners() {
     }
     
     // --- START: CORRECTED MODAL CLOSE LOGIC ---
-    
-    // This function will handle closing any active modal
-    const closeActiveModal = () => {
-        const activeModal = document.querySelector('.modal[style*="display: block"]');
-        if (activeModal) {
-            activeModal.style.display = 'none';
-        }
-    };
 
-    // Listen for clicks on ANY element with the class "close"
-    document.addEventListener('click', function(event) {
-        if (event.target && event.target.classList.contains('close')) {
-            closeActiveModal();
+// Find all close buttons and add a direct click event listener
+document.querySelectorAll('.close').forEach(button => {
+    button.addEventListener('click', function() {
+        // Find the closest parent modal and hide it
+        const modal = this.closest('.modal');
+        if (modal) {
+            modal.style.display = 'none';
         }
     });
+});
 
-    // Listen for clicks on the modal background to close it
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeActiveModal();
-            }
-        });
+// Add listeners to modals to close when the background is clicked
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', function(event) {
+        // If the clicked element is the modal background itself, hide it
+        if (event.target === this) {
+            this.style.display = 'none';
+        }
     });
+});
 
-    // --- END: CORRECTED MODAL CLOSE LOGIC ---
-
+// --- END: CORRECTED MODAL CLOSE LOGIC ---
     // Intersection Observer for animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
