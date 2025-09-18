@@ -1375,4 +1375,60 @@ section h2 {
     height: 100%;
 }
 
-/* --- END: Video Player CSS --- */
+/* ... (all your existing CSS) ... */
+
+/* --- START: Signup Button and Responsive Nav Fix --- */
+.nav-signup-btn {
+    padding: 10px 22px;
+    font-size: 1rem;
+    margin-left: 20px; /* Add some space between the menu and the button */
+}
+
+/* On mobile, hide the signup button in the nav bar */
+@media (max-width: 768px) {
+    .nav-signup-btn {
+        display: none;
+    }
+
+    /* We need to add the signup option to the slide-out menu */
+    .nav-menu.active {
+        padding-bottom: 80px; /* Add space for the button */
+    }
+}
+
+/* --- END: Signup Button and Responsive Nav Fix --- */
+
+/* --- START: Signup Modal CSS (If you don't have this already) --- */
+.signup-modal-content {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.signup-modal-content h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.signup-modal-content p {
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+#signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+/* --- END: Signup Modal CSS --- */
