@@ -1,0 +1,98 @@
+/* public/css/drill.css */
+body {
+    background-color: #f8f9fa;
+}
+
+.drill-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+    text-align: center;
+}
+
+#drill-start-screen h1, #drill-end-screen h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+#drill-start-screen p, #drill-end-screen p {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+}
+
+.drill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.drill-timer, .drill-progress {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #34495e;
+}
+
+.scenario-card {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: left;
+}
+
+.scenario-card h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.scenario-card p {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.scenario-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.option-btn {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1rem;
+    text-align: left;
+    background: #f8f9fa;
+    border: 2px solid #ecf0f1;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.option-btn:hover {
+    background: #eaf5fb;
+    border-color: #3498db;
+}
+
+.drill-summary {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    display: inline-block;
+}
+
+.drill-summary p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
