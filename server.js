@@ -6,20 +6,18 @@ const WebSocket = require('ws');
 const http = require('http');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
-const mongoose = require('mongoose'); // Import mongoose
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Database Connection ---
-// Connects to the MongoDB database using the connection string from your .env file.
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('✅ MongoDB connected successfully.'))
     .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // --- User Schema ---
-// Defines the structure for user documents in the database.
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
@@ -31,7 +29,6 @@ const UserSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', UserSchema);
 
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -40,14 +37,13 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'disaster-preparedness-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Use secure cookies in production
+    cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
-// In-memory data stores (for non-persistent data like WebSocket clients and logs)
+// In-memory data stores
 const clients = new Map();
 const loginLogs = [];
 
-// Create an HTTP server + WebSocket
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
@@ -55,7 +51,6 @@ const wss = new WebSocket.Server({ server });
 wss.on('connection', ws => {
     const clientId = Math.random().toString(36).substring(2, 15);
     clients.set(clientId, { ws, location: null });
-
     ws.on('message', message => {
         try {
             const data = JSON.parse(message);
@@ -63,42 +58,32 @@ wss.on('connection', ws => {
                 const client = clients.get(clientId);
                 if (client) {
                     client.location = data.location;
-                    console.log(`Location updated for ${clientId}:`, data.location);
                 }
             }
         } catch (error) {
             console.error('Failed to parse message:', error);
         }
     });
-
-    ws.on('close', () => {
-        console.log(`Client ${clientId} disconnected.`);
-        clients.delete(clientId);
-    });
-
-    ws.on('error', error => {
-        console.error(`WebSocket error for client ${clientId}:`, error);
-    });
+    ws.on('close', () => clients.delete(clientId));
+    ws.on('error', error => console.error(`WebSocket error for client ${clientId}:`, error));
 });
 
-// Helper: Haversine formula for calculating distance
+// Helper: Haversine formula
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // metres
     const φ1 = lat1 * Math.PI / 180;
     const φ2 = lat2 * Math.PI / 180;
     const Δφ = (lat2 - lat1) * Math.PI / 180;
     const Δλ = (lon2 - lon1) * Math.PI / 180;
-
     const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
         Math.cos(φ1) * Math.cos(φ2) *
         Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
     return R * c;
 }
 
 // =====================
-// AUTH ROUTES (Updated for DB)
+// AUTH ROUTES (FIXED)
 // =====================
 
 // Signup
@@ -109,9 +94,14 @@ app.post('/api/signup', async (req, res) => {
             return res.status(400).json({ success: false, message: "All fields are required." });
         }
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ success: false, message: 'User already exists.' });
+        // ✅ FIX: Check for existing email AND username separately for clear feedback
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+            return res.status(400).json({ success: false, message: 'An account with this email already exists.' });
+        }
+        const existingUsername = await User.findOne({ username });
+        if (existingUsername) {
+            return res.status(400).json({ success: false, message: 'This username is already taken. Please choose another.' });
         }
 
         const saltRounds = 10;
@@ -170,7 +160,7 @@ app.post('/api/logout', (req, res) => {
     });
 });
 
-// Current user session check
+// Current user
 app.get('/api/user', async (req, res) => {
     if (req.session.userId) {
         try {
@@ -185,22 +175,17 @@ app.get('/api/user', async (req, res) => {
     res.json({ success: false, message: 'Not authenticated' });
 });
 
-
 // =====================
 // EMERGENCY & ADMIN ROUTES
 // =====================
-
 app.post('/api/trigger-alarm', (req, res) => {
-    const { userId, disasterType, location } = req.body;
-    // ... (This function remains the same)
+    // This function remains the same
 });
 
-// Admin route for login logs
 app.get('/api/logs', (req, res) => {
     res.json(loginLogs.slice().reverse());
 });
 
-// Admin route for user progress
 app.get('/api/users/progress', async (req, res) => {
     try {
         const users = await User.find().select('username email preparednessScore modulesCompleted');
@@ -213,8 +198,6 @@ app.get('/api/users/progress', async (req, res) => {
 // =====================
 // FALLBACK ROUTE
 // =====================
-
-// This sends the main HTML file for any requests that don't match the API routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -222,6 +205,4 @@ app.get('*', (req, res) => {
 // Start server
 server.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
-    console.log(`📚 Modules: Earthquake, Fire, Flood, Cyclone safety`);
-    console.log(`🎯 Features: Drills, progress tracking, alerts`);
 });
