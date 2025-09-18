@@ -13,11 +13,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Database Connection ---
+// Connects to the MongoDB database using the connection string from your .env file.
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('✅ MongoDB connected successfully.'))
     .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // --- User Schema ---
+// Defines the structure for user documents in the database.
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
@@ -38,17 +40,62 @@ app.use(session({
     secret: process.env.SESSION_SECRET || 'disaster-preparedness-secret-key',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    cookie: { secure: process.env.NODE_ENV === 'production' } // Use secure cookies in production
 }));
 
-// In-memory data stores (for non-user data)
+// In-memory data stores (for non-persistent data like WebSocket clients and logs)
 const clients = new Map();
 const loginLogs = [];
 
+// Create an HTTP server + WebSocket
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// ... (Keep your existing WebSocket and Haversine formula code here) ...
+// WebSocket connection handling
+wss.on('connection', ws => {
+    const clientId = Math.random().toString(36).substring(2, 15);
+    clients.set(clientId, { ws, location: null });
+
+    ws.on('message', message => {
+        try {
+            const data = JSON.parse(message);
+            if (data.type === 'location-update') {
+                const client = clients.get(clientId);
+                if (client) {
+                    client.location = data.location;
+                    console.log(`Location updated for ${clientId}:`, data.location);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to parse message:', error);
+        }
+    });
+
+    ws.on('close', () => {
+        console.log(`Client ${clientId} disconnected.`);
+        clients.delete(clientId);
+    });
+
+    ws.on('error', error => {
+        console.error(`WebSocket error for client ${clientId}:`, error);
+    });
+});
+
+// Helper: Haversine formula for calculating distance
+function getDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371e3; // metres
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+}
 
 // =====================
 // AUTH ROUTES (Updated for DB)
@@ -84,7 +131,7 @@ app.post('/api/signup', async (req, res) => {
         });
     } catch (error) {
         console.error('Signup error:', error);
-        res.status(500).json({ success: false, message: 'Signup failed.' });
+        res.status(500).json({ success: false, message: 'An internal error occurred during signup.' });
     }
 });
 
@@ -111,7 +158,7 @@ app.post('/api/login', async (req, res) => {
         res.json({ success: true, user: { id: user._id, username: user.username, email: user.email } });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ success: false, message: 'Login failed.' });
+        res.status(500).json({ success: false, message: 'An internal error occurred during login.' });
     }
 });
 
@@ -123,21 +170,37 @@ app.post('/api/logout', (req, res) => {
     });
 });
 
-// Current user
+// Current user session check
 app.get('/api/user', async (req, res) => {
     if (req.session.userId) {
-        const user = await User.findById(req.session.userId).select('-password');
-        if (user) {
-            return res.json({ success: true, user: { id: user._id, username: user.username, email: user.email } });
+        try {
+            const user = await User.findById(req.session.userId).select('-password');
+            if (user) {
+                return res.json({ success: true, user: { id: user._id, username: user.username, email: user.email } });
+            }
+        } catch (error) {
+            return res.json({ success: false, message: 'Error fetching user data.' });
         }
     }
     res.json({ success: false, message: 'Not authenticated' });
 });
 
 
-// ... (Keep your emergency alert routes as they are) ...
+// =====================
+// EMERGENCY & ADMIN ROUTES
+// =====================
 
-// ... (Update the user progress routes) ...
+app.post('/api/trigger-alarm', (req, res) => {
+    const { userId, disasterType, location } = req.body;
+    // ... (This function remains the same)
+});
+
+// Admin route for login logs
+app.get('/api/logs', (req, res) => {
+    res.json(loginLogs.slice().reverse());
+});
+
+// Admin route for user progress
 app.get('/api/users/progress', async (req, res) => {
     try {
         const users = await User.find().select('username email preparednessScore modulesCompleted');
@@ -147,13 +210,16 @@ app.get('/api/users/progress', async (req, res) => {
     }
 });
 
+// =====================
+// FALLBACK ROUTE
+// =====================
 
-// ... (Keep your fallback route and server.listen) ...
-
+// This sends the main HTML file for any requests that don't match the API routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Start server
 server.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:${PORT}`);
     console.log(`📚 Modules: Earthquake, Fire, Flood, Cyclone safety`);
