@@ -1,0 +1,115 @@
+/* public/css/dashboard.css */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+}
+
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.dashboard-header p {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+}
+
+.dashboard-card h3 {
+    font-size: 1.4rem;
+    color: #34495e;
+    margin-bottom: 25px;
+    text-align: center;
+    border-bottom: 1px solid #ecf0f1;
+    padding-bottom: 15px;
+}
+
+/* Score Card */
+.score-card {
+    text-align: center;
+}
+.score-card .score-circle {
+    margin: 0 auto 20px;
+}
+.score-card .circle-progress {
+     background: conic-gradient(#3498db 0deg, #ecf0f1 0deg);
+}
+.score-card p {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+/* Badges Card */
+.badges-grid-dash {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/* Modules Progress Card */
+.module-progress-list .module-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+.module-progress-list .module-item:hover {
+    background-color: #f8f9fa;
+}
+.module-progress-list .module-item i {
+    font-size: 1.2rem;
+    color: #3498db;
+    margin-right: 15px;
+    width: 25px;
+    text-align: center;
+}
+.module-progress-list .module-item.completed i {
+    color: #2ecc71;
+}
+.module-progress-list .module-item span {
+    font-weight: 500;
+    color: #34495e;
+}
+.module-progress-list .module-item.completed span {
+    text-decoration: line-through;
+    color: #95a5a6;
+}
+
+@media (max-width: 768px) {
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
