@@ -47,7 +47,7 @@
             <p>Learn disaster preparedness through interactive modules and virtual drills designed for Indian schools and colleges</p>
             <div class="hero-buttons">
                 <button class="btn btn-primary" onclick="startLearning()">Start Learning</button>
-                <<a href="signup.html" class="btn-signup">Sign Up</a>
+                <a href="signup.html" class="btn btn-secondary">Sign Up</a>
             </div>
             </div>
         </div>
@@ -361,13 +361,11 @@
                 <h2><i class="fas fa-user-plus"></i> Join DisasterEdu</h2>
                 <p>Sign up to track your progress and stay prepared for emergencies.</p>
                 
-                <!-- Auth Toggle -->
                 <div class="auth-toggle">
                     <button id="signup-tab" class="auth-tab active" onclick="showSignupForm()">Sign Up</button>
                     <button id="login-tab" class="auth-tab" onclick="showLoginForm()">Login</button>
                 </div>
                 
-                <!-- Sign Up Form -->
                 <form id="signup-form" onsubmit="handleEmailSignup(event)">
                     <div class="form-group">
                         <input type="text" id="signup-username" placeholder="Username" required>
@@ -381,7 +379,6 @@
                     <button type="submit" class="btn btn-primary">Create Account</button>
                 </form>
                 
-                <!-- Login Form -->
                 <form id="login-form" style="display: none;" onsubmit="handleEmailLogin(event)">
                     <div class="form-group">
                         <input type="email" id="login-email" placeholder="Email Address" required>
