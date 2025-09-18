@@ -1712,7 +1712,6 @@ function loadUserProgress() {
 }
 
 function updateUI() {
-    loadUserProgress();
     updatePreparednessScore();
 }
 
