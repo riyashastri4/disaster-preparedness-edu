@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Disaster Preparedness</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-user-shield"></i>
+                <span>Admin Panel</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Back to Site</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="admin-container">
+        <header class="admin-header">
+            <h1>User Preparedness Dashboard</h1>
+            <p>Overview of user progress and preparedness scores across the platform.</p>
+        </header>
+        <div class="logs-table-container">
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Preparedness Score</th>
+                        <th>Modules Completed</th>
+                    </tr>
+                </thead>
+                <tbody id="progress-tbody">
+                    </tbody>
+            </table>
+        </div>
+
+        <header class="admin-header" style="margin-top: 60px;">
+            <h1>User Login History</h1>
+            <p>A chronological list of all successful user logins to the system.</p>
+        </header>
+        <div class="logs-table-container">
+            <table class="logs-table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Login Time</th>
+                    </tr>
+                </thead>
+                <tbody id="logs-tbody">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
