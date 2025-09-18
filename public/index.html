@@ -26,6 +26,11 @@
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <a href="#" id="mobile-signup-link" class="nav-link nav-link-btn">Sign Up</a>
+                <div id="user-menu" class="nav-user" style="display: none;">
+                    <img id="user-avatar" src="" alt="User" class="user-avatar">
+                    <span id="user-name">User</span>
+                    <button onclick="logout()" class="btn btn-logout">Logout</button>
+                </div>
             </div>
 
             <div class="hamburger">
@@ -42,7 +47,7 @@
             <p>Learn disaster preparedness through interactive modules and virtual drills designed for Indian schools and colleges</p>
             <div class="hero-buttons">
                 <button class="btn btn-primary" onclick="startLearning()">Start Learning</button>
-                 <button id="signup-btn" class="btn btn-secondary">Create Account</button>
+                <button id="signup-btn" class="btn btn-secondary">Sign Up</button>
             </div>
             </div>
         </div>
@@ -353,20 +358,43 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <div class="signup-modal-content">
-                <h2><i class="fas fa-user-plus"></i> Create Your Account</h2>
-                <p>Join DisasterEdu to track your progress and stay prepared.</p>
-                <form id="signup-form" onsubmit="handleSignup(event)">
+                <h2><i class="fas fa-user-plus"></i> Join DisasterEdu</h2>
+                <p>Sign up to track your progress and stay prepared for emergencies.</p>
+                
+                <!-- Auth Toggle -->
+                <div class="auth-toggle">
+                    <button id="signup-tab" class="auth-tab active" onclick="showSignupForm()">Sign Up</button>
+                    <button id="login-tab" class="auth-tab" onclick="showLoginForm()">Login</button>
+                </div>
+                
+                <!-- Sign Up Form -->
+                <form id="signup-form" onsubmit="handleEmailSignup(event)">
                     <div class="form-group">
-                        <input type="text" id="username" placeholder="Username" required>
+                        <input type="text" id="signup-username" placeholder="Username" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email" placeholder="Email Address" required>
+                        <input type="email" id="signup-email" placeholder="Email Address" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" id="password" placeholder="Password" required>
+                        <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
                 </form>
+                
+                <!-- Login Form -->
+                <form id="login-form" style="display: none;" onsubmit="handleEmailLogin(event)">
+                    <div class="form-group">
+                        <input type="email" id="login-email" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                
+                <div class="auth-footer">
+                    <small>By signing up, you agree to our Terms of Service and Privacy Policy.</small>
+                </div>
             </div>
         </div>
     </div>

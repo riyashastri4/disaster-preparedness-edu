@@ -5,6 +5,8 @@ const path = require('path');
 const WebSocket = require('ws');
 const http = require('http');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,11 +16,20 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
+// Session middleware
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'disaster-preparedness-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Set to true if using HTTPS in production
+}));
+
 // In-memory data store for connected clients and user data
 const clients = new Map();
 let userData = {};
 let emergencyAlerts = [];
 const users = []; // In-memory user store
+
 
 // Create an HTTP server and a WebSocket server
 const server = http.createServer(app);
@@ -74,7 +85,9 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return R * c; // in metres
 }
 
-// --- NEW: User Signup API ---
+// Authentication Routes
+
+// Signup route
 app.post('/api/signup', async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -90,15 +103,86 @@ app.post('/api/signup', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Store the new user
-        const newUser = { id: users.length + 1, username, email, password: hashedPassword };
+        const newUser = {
+            id: users.length + 1,
+            username,
+            email,
+            password: hashedPassword,
+            createdAt: new Date().toISOString()
+        };
         users.push(newUser);
 
-        console.log('New user signed up:', newUser);
-        res.status(201).json({ success: true, message: 'User created successfully.' });
+        // Store user in session
+        req.session.userId = newUser.id;
+        req.session.user = { id: newUser.id, username: newUser.username, email: newUser.email };
+
+        console.log('New user signed up:', newUser.username);
+        res.status(201).json({ 
+            success: true, 
+            message: 'User created successfully.',
+            user: { id: newUser.id, username: newUser.username, email: newUser.email }
+        });
 
     } catch (error) {
         console.error('Signup error:', error);
         res.status(500).json({ success: false, message: 'An error occurred during signup.' });
+    }
+});
+
+// Login route
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Find user
+        const user = users.find(u => u.email === email);
+        if (!user) {
+            return res.status(401).json({ success: false, message: 'Invalid email or password.' });
+        }
+
+        // Check password
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(401).json({ success: false, message: 'Invalid email or password.' });
+        }
+
+        // Store user in session
+        req.session.userId = user.id;
+        req.session.user = { id: user.id, username: user.username, email: user.email };
+
+        console.log('User logged in:', user.username);
+        res.json({ 
+            success: true, 
+            user: { id: user.id, username: user.username, email: user.email }
+        });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, message: 'An error occurred during login.' });
+    }
+});
+
+// Logout route
+app.post('/api/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Logout error' });
+        }
+        res.json({ success: true, message: 'Logged out successfully' });
+    });
+});
+
+// Get current user route
+app.get('/api/user', (req, res) => {
+    if (req.session.userId) {
+        const user = users.find(u => u.id === req.session.userId);
+        if (user) {
+            res.json({ success: true, user: { id: user.id, username: user.username, email: user.email } });
+        } else {
+            res.json({ success: false, message: 'User not found' });
+        }
+    } else {
+        res.json({ success: false, message: 'Not authenticated' });
     }
 });
 

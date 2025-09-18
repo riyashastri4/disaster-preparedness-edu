@@ -1030,6 +1030,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserProgress();
     animateStats();
     populateLocalContacts();
+    checkAuthStatus();
 });
 
 function initializeApp() {
@@ -1861,18 +1862,36 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
     return false;
 };
 
-// --- Signup Modal Functions ---
+// --- Authentication Functions ---
 function openSignupModal() {
     const modal = document.getElementById('signup-modal');
     modal.style.display = 'block';
     currentModal = modal;
+    // Default to signup form
+    showSignupForm();
 }
 
-async function handleSignup(event) {
+// Toggle between signup and login forms
+function showSignupForm() {
+    document.getElementById('signup-form').style.display = 'block';
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('signup-tab').classList.add('active');
+    document.getElementById('login-tab').classList.remove('active');
+}
+
+function showLoginForm() {
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('login-form').style.display = 'block';
+    document.getElementById('signup-tab').classList.remove('active');
+    document.getElementById('login-tab').classList.add('active');
+}
+
+// Email signup
+async function handleEmailSignup(event) {
     event.preventDefault();
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('signup-username').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
 
     try {
         const response = await fetch('/api/signup', {
@@ -1884,14 +1903,110 @@ async function handleSignup(event) {
         const result = await response.json();
 
         if (response.ok) {
-            alert('Signup successful! You can now log in.');
+            showNotification(`Welcome to DisasterEdu, ${result.user.username}!`);
+            updateUIForLoggedInUser(result.user);
             closeModal();
         } else {
             alert(`Signup failed: ${result.message}`);
         }
     } catch (error) {
-        console.error('Signup fetch error:', error);
-        alert('An error occurred. Please check the console and try again.');
+        console.error('Signup error:', error);
+        alert('An error occurred during signup. Please try again.');
+    }
+}
+
+// Email login
+async function handleEmailLogin(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showNotification(`Welcome back, ${result.user.username}!`);
+            updateUIForLoggedInUser(result.user);
+            closeModal();
+        } else {
+            alert(`Login failed: ${result.message}`);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('An error occurred during login. Please try again.');
+    }
+}
+
+// Check authentication status
+async function checkAuthStatus() {
+    try {
+        const response = await fetch('/api/user');
+        const result = await response.json();
+        
+        if (result.success) {
+            updateUIForLoggedInUser(result.user);
+        }
+    } catch (error) {
+        console.error('Auth check error:', error);
+    }
+}
+
+// Update UI for logged in user
+function updateUIForLoggedInUser(user) {
+    const signupBtn = document.getElementById('signup-btn');
+    const mobileSignupLink = document.getElementById('mobile-signup-link');
+    const userMenu = document.getElementById('user-menu');
+    const userName = document.getElementById('user-name');
+    const userAvatar = document.getElementById('user-avatar');
+    
+    if (signupBtn) signupBtn.style.display = 'none';
+    if (mobileSignupLink) mobileSignupLink.style.display = 'none';
+    
+    if (userMenu && userName) {
+        userMenu.style.display = 'flex';
+        userName.textContent = user.username;
+        
+        // Hide avatar since we're not using Google OAuth
+        if (userAvatar) {
+            userAvatar.style.display = 'none';
+        }
+    }
+}
+
+// Logout function
+async function logout() {
+    try {
+        const response = await fetch('/api/logout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (response.ok) {
+            showNotification('Logged out successfully');
+            // Reset UI to logged out state
+            const signupBtn = document.getElementById('signup-btn');
+            const mobileSignupLink = document.getElementById('mobile-signup-link');
+            const userMenu = document.getElementById('user-menu');
+            
+            if (signupBtn) signupBtn.style.display = 'inline-block';
+            if (mobileSignupLink) mobileSignupLink.style.display = 'inline-block';
+            if (userMenu) userMenu.style.display = 'none';
+            
+            // Reload page to reset any user-specific data
+            setTimeout(() => window.location.reload(), 1000);
+        } else {
+            alert('Logout failed. Please try again.');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+        alert('An error occurred during logout.');
     }
 }
 
