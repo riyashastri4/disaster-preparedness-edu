@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Drill - Fire Escape</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/drill.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-tasks"></i>
+                <span>Virtual Drill</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="drill-container">
+        <div id="drill-start-screen">
+            <h1>Virtual Fire Escape Drill</h1>
+            <p>This is a timed drill. Read each scenario carefully and choose the best course of action. Your goal is to evacuate safely as quickly as possible.</p>
+            <button id="start-drill-btn" class="btn btn-primary">Start Drill</button>
+        </div>
+
+        <div id="drill-scenario-screen" style="display: none;">
+            <div class="drill-header">
+                <div class="drill-timer">
+                    <i class="fas fa-clock"></i>
+                    Time: <span id="timer-display">00:00</span>
+                </div>
+                <div class="drill-progress">
+                    Step <span id="current-step">1</span> of <span id="total-steps">5</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <h2 id="scenario-title">Scenario Title</h2>
+                <p id="scenario-description">Scenario description goes here.</p>
+                <div id="scenario-options" class="scenario-options">
+                    </div>
+            </div>
+        </div>
+
+        <div id="drill-end-screen" style="display: none;">
+            <h1 id="drill-result-title">Drill Complete!</h1>
+            <p id="drill-result-message">You have successfully completed the drill.</p>
+            <div class="drill-summary">
+                <p>Time Taken: <strong id="final-time">00:00</strong></p>
+                <p>Score: <strong id="final-score">0</strong></p>
+            </div>
+            <a href="/" class="btn btn-secondary">Return to Home</a>
+        </div>
+    </main>
+
+    <script src="js/drill.js"></script>
+</body>
+</html>
