@@ -1141,12 +1141,7 @@ function setupEventListeners() {
         });
     }
 
-    // --- CORRECTED: Event Listeners for both buttons ---
-    const signupBtn = document.getElementById('signup-btn');
-    if (signupBtn) {
-        signupBtn.addEventListener('click', openSignupModal);
-    }
-
+    // Mobile signup link event listener
     const mobileSignupLink = document.getElementById('mobile-signup-link');
     if (mobileSignupLink) {
         mobileSignupLink.addEventListener('click', (e) => {
