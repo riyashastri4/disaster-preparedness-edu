@@ -1377,26 +1377,35 @@ section h2 {
 
 /* ... (all your existing CSS) ... */
 
+/* ... (all your existing CSS) ... */
+
 /* --- START: Signup Button and Responsive Nav Fix --- */
-.nav-signup-btn {
-    padding: 10px 22px;
-    font-size: 1rem;
-    margin-left: 20px; /* Add some space between the menu and the button */
+
+/* Hide the mobile-only link by default */
+.nav-link-btn {
+    display: none;
 }
 
-/* On mobile, hide the signup button in the nav bar */
 @media (max-width: 768px) {
-    .nav-signup-btn {
+    /* Hide the main hero button on mobile */
+    #signup-btn {
         display: none;
     }
 
-    /* We need to add the signup option to the slide-out menu */
-    .nav-menu.active {
-        padding-bottom: 80px; /* Add space for the button */
+    /* Show the signup link inside the hamburger menu on mobile */
+    .nav-link-btn {
+        display: block;
+        text-align: center;
+        padding: 10px;
+        margin: 10px auto;
+        border: 1px solid #fff;
+        border-radius: 20px;
+        width: 80%;
     }
 }
 
 /* --- END: Signup Button and Responsive Nav Fix --- */
+
 
 /* --- START: Signup Modal CSS (If you don't have this already) --- */
 .signup-modal-content {
