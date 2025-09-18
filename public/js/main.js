@@ -1026,10 +1026,11 @@ let currentQuestionIndex = 0;
 let quizAnswers = [];
 let quizScore = 0;
 
-// Initialize Application
+
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     setupEventListeners();
+    initializeWebSocket(); // Add this line to start the real-time connection
     loadUserProgress();
     animateStats();
     populateLocalContacts();
