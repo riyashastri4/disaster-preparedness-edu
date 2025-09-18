@@ -1491,7 +1491,7 @@ function reviewModule() {
 
 function closeModal() {
     if (currentModal) {
-        currentModal.classList.remove('is-visible');
+        currentModal.style.display = 'none';
         currentModal = null;
     }
 }
@@ -1501,6 +1501,7 @@ function showAnswer(answerId, answer) {
     answerDiv.innerHTML = `<strong>Answer:</strong> ${answer}`;
     answerDiv.style.display = 'block';
 }
+
 
 function practiceDropCoverHold() {
     alert('Great! Practice the Drop, Cover, and Hold technique:\n\n1. DROP to hands and knees\n2. COVER under desk/table\n3. HOLD onto shelter\n\nRemember: Stay protected until shaking stops!');
