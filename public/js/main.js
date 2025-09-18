@@ -1140,8 +1140,6 @@ function stopEmergencyAlarm() {
     }
 }
 
-// REPLACE your existing setupEventListeners function with this one
-
 function setupEventListeners() {
     // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
@@ -1155,28 +1153,29 @@ function setupEventListeners() {
     
     // --- START: CORRECTED MODAL CLOSE LOGIC ---
 
-// Find all close buttons and add a direct click event listener
-document.querySelectorAll('.close').forEach(button => {
-    button.addEventListener('click', function() {
-        // Find the closest parent modal and hide it
-        const modal = this.closest('.modal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
+    // Find all close buttons (X) and add a click listener to each one
+    document.querySelectorAll('.close').forEach(button => {
+        button.addEventListener('click', function() {
+            // Find the closest parent element with the class "modal" and hide it
+            const modal = this.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
     });
-});
 
-// Add listeners to modals to close when the background is clicked
-document.querySelectorAll('.modal').forEach(modal => {
-    modal.addEventListener('click', function(event) {
-        // If the clicked element is the modal background itself, hide it
-        if (event.target === this) {
-            this.style.display = 'none';
-        }
+    // Add listeners to modals to also close when the gray background is clicked
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(event) {
+            // If the clicked element is the modal background itself, hide it
+            if (event.target === this) {
+                this.style.display = 'none';
+            }
+        });
     });
-});
 
-// --- END: CORRECTED MODAL CLOSE LOGIC ---
+    // --- END: CORRECTED MODAL CLOSE LOGIC ---
+    
     // Intersection Observer for animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
