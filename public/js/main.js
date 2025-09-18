@@ -1859,11 +1859,19 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 
 // --- Authentication Functions ---
 function openSignupModal() {
+    console.log('openSignupModal function called');
     const modal = document.getElementById('signup-modal');
-    modal.style.display = 'block';
-    currentModal = modal;
-    // Default to signup form
-    showSignupForm();
+    console.log('Modal element:', modal);
+    if (modal) {
+        modal.style.display = 'block';
+        currentModal = modal;
+        console.log('Modal should now be visible');
+        // Default to signup form
+        showSignupForm();
+    } else {
+        console.error('Signup modal not found!');
+        alert('Error: Signup modal not found. Please refresh the page.');
+    }
 }
 
 // Toggle between signup and login forms

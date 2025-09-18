@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Signup Button</title>
+    <style>
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal-content { background: white; margin: 10% auto; padding: 20px; width: 400px; border-radius: 10px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .close { float: right; font-size: 28px; cursor: pointer; }
+        .form-group { margin: 10px 0; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .auth-toggle { display: flex; margin: 20px 0; }
+        .auth-tab { flex: 1; padding: 10px; border: 1px solid #ddd; cursor: pointer; background: #f8f9fa; }
+        .auth-tab.active { background: #3498db; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Test Authentication</h1>
+    <button onclick="openSignupModal()" class="btn btn-secondary">Test Sign Up</button>
+    
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Join DisasterEdu</h2>
+            <p>Sign up to track your progress and stay prepared for emergencies.</p>
+            
+            <div class="auth-toggle">
+                <button id="signup-tab" class="auth-tab active" onclick="showSignupForm()">Sign Up</button>
+                <button id="login-tab" class="auth-tab" onclick="showLoginForm()">Login</button>
+            </div>
+            
+            <!-- Sign Up Form -->
+            <form id="signup-form" onsubmit="handleEmailSignup(event)">
+                <div class="form-group">
+                    <input type="text" id="signup-username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signup-email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-password" placeholder="Password (min 6 characters)" minlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+            
+            <!-- Login Form -->
+            <form id="login-form" style="display: none;" onsubmit="handleEmailLogin(event)">
+                <div class="form-group">
+                    <input type="email" id="login-email" placeholder="Email Address" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openSignupModal() {
+            console.log('Opening signup modal...');
+            const modal = document.getElementById('signup-modal');
+            modal.style.display = 'block';
+            showSignupForm();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('signup-modal');
+            modal.style.display = 'none';
+        }
+
+        function showSignupForm() {
+            document.getElementById('signup-form').style.display = 'block';
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('signup-tab').classList.add('active');
+            document.getElementById('login-tab').classList.remove('active');
+        }
+
+        function showLoginForm() {
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('signup-tab').classList.remove('active');
+            document.getElementById('login-tab').classList.add('active');
+        }
+
+        async function handleEmailSignup(event) {
+            event.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`Welcome to DisasterEdu, ${result.user.username}!`);
+                    closeModal();
+                } else {
+                    alert(`Signup failed: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('An error occurred during signup. Please try again.');
+            }
+        }
+
+        async function handleEmailLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`Welcome back, ${result.user.username}!`);
+                    closeModal();
+                } else {
+                    alert(`Login failed: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('An error occurred during login. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>
