@@ -2214,6 +2214,48 @@ if ('serviceWorker' in navigator) {
         // navigator.serviceWorker.register('/sw.js');
     });
 }
+// ... (existing JavaScript) ...
+
+// --- NEW: Signup Modal Functions ---
+
+function openSignupModal() {
+    const modal = document.getElementById('signup-modal');
+    modal.style.display = 'block';
+    currentModal = modal;
+}
+
+async function handleSignup(event) {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        alert('Signup successful! You can now log in.');
+        closeModal();
+    } else {
+        alert(`Signup failed: ${result.message}`);
+    }
+}
+
+
+// Service Worker Registration (for offline functionality)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        // Note: Service worker file would need to be created separately
+        // navigator.serviceWorker.register('/sw.js');
+    });
+}
 // PASTE THIS ENTIRE CODE SNIPPET AT THE END OF main.js
 
 function sendTestAlarm() {
