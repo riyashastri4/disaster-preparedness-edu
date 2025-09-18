@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const WebSocket = require('ws');
 const http = require('http');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use(express.static('public'));
 const clients = new Map();
 let userData = {};
 let emergencyAlerts = [];
+const users = []; // In-memory user store
 
 // Create an HTTP server and a WebSocket server
 const server = http.createServer(app);
@@ -71,6 +73,35 @@ function getDistance(lat1, lon1, lat2, lon2) {
 
     return R * c; // in metres
 }
+
+// --- NEW: User Signup API ---
+app.post('/api/signup', async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
+
+        // Check if user already exists
+        const existingUser = users.find(user => user.email === email);
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: 'User already exists.' });
+        }
+
+        // Hash the password
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Store the new user
+        const newUser = { id: users.length + 1, username, email, password: hashedPassword };
+        users.push(newUser);
+
+        console.log('New user signed up:', newUser);
+        res.status(201).json({ success: true, message: 'User created successfully.' });
+
+    } catch (error) {
+        console.error('Signup error:', error);
+        res.status(500).json({ success: false, message: 'An error occurred during signup.' });
+    }
+});
+
 
 // User-triggered alarm route
 app.post('/api/trigger-alarm', (req, res) => {
