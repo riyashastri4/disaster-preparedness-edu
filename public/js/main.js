@@ -1151,6 +1151,12 @@ function setupEventListeners() {
             navMenu.classList.toggle('active');
         });
     }
+
+    // --- NEW: Signup Button Event Listener ---
+    const signupBtn = document.getElementById('signup-btn');
+    if (signupBtn) {
+        signupBtn.addEventListener('click', openSignupModal);
+    }
     
     // --- START: CORRECTED MODAL CLOSE LOGIC ---
 
@@ -2247,7 +2253,6 @@ async function handleSignup(event) {
         alert(`Signup failed: ${result.message}`);
     }
 }
-
 
 // Service Worker Registration (for offline functionality)
 if ('serviceWorker' in navigator) {
