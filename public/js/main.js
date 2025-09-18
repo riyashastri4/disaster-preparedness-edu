@@ -1128,6 +1128,8 @@ function stopEmergencyAlarm() {
     }
 }
 
+// ... (code from the top of the file remains the same) ...
+
 function setupEventListeners() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -1138,6 +1140,7 @@ function setupEventListeners() {
         });
     }
 
+    // --- CORRECTED: Event Listeners for both buttons ---
     const signupBtn = document.getElementById('signup-btn');
     if (signupBtn) {
         signupBtn.addEventListener('click', openSignupModal);
@@ -1146,12 +1149,14 @@ function setupEventListeners() {
     const mobileSignupLink = document.getElementById('mobile-signup-link');
     if (mobileSignupLink) {
         mobileSignupLink.addEventListener('click', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Prevent page jump
             openSignupModal();
-            navMenu.classList.remove('active');
+            navMenu.classList.remove('active'); // Close menu after clicking
         });
     }
     
+    // --- START: MODAL CLOSE LOGIC ---
+
     document.querySelectorAll('.close').forEach(button => {
         button.addEventListener('click', function() {
             const modal = this.closest('.modal');
@@ -1169,6 +1174,8 @@ function setupEventListeners() {
         });
     });
 
+    // --- END: MODAL CLOSE LOGIC ---
+    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
