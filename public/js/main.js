@@ -1129,8 +1129,6 @@ function stopEmergencyAlarm() {
     }
 }
 
-// ... (code from the top of the file remains the same) ...
-
 function setupEventListeners() {
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -1145,27 +1143,34 @@ function setupEventListeners() {
     const mobileSignupLink = document.getElementById('mobile-signup-link');
     if (mobileSignupLink) {
         mobileSignupLink.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent page jump
+            e.preventDefault();
             openSignupModal();
-            navMenu.classList.remove('active'); // Close menu after clicking
+            navMenu.classList.remove('active');
         });
     }
     
+    // Attach the event listener for the main "Sign Up" button
+    const signupBtn = document.getElementById('signup-btn');
+    if (signupBtn) {
+        signupBtn.addEventListener('click', openSignupModal);
+    }
+    
     // --- START: MODAL CLOSE LOGIC ---
-
     document.querySelectorAll('.close').forEach(button => {
         button.addEventListener('click', function() {
+            // Find the closest modal parent and close it
             const modal = this.closest('.modal');
-            if (modal) {
-                modal.style.display = 'none';
+            if(modal && modal.classList.contains('is-visible')) {
+                modal.classList.remove('is-visible');
             }
         });
     });
 
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', function(event) {
+            // If the user clicks on the modal background (not the content), close it
             if (event.target === this) {
-                this.style.display = 'none';
+                this.classList.remove('is-visible');
             }
         });
     });
@@ -1864,6 +1869,13 @@ function openSignupModal() {
         modal.classList.add('is-visible');
         currentModal = modal;
         showSignupForm();
+    }
+}
+
+function closeModal() {
+    if (currentModal) {
+        currentModal.classList.remove('is-visible');
+        currentModal = null;
     }
 }
 
