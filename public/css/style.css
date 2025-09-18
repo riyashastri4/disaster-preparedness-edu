@@ -628,12 +628,12 @@ section h2 {
     width: 100%;
     height: 100%;
     background-color: rgba(0,0,0,0.5);
-    /* Added flex for centering the content */
+    /* Use flexbox to easily center the modal content */
     align-items: center;
     justify-content: center;
 }
 
-/* This new class will be toggled by JavaScript to show the modal */
+/* This new class will be added by JavaScript to show the modal */
 .modal.is-visible {
     display: flex;
 }
@@ -644,12 +644,12 @@ section h2 {
     border-radius: 15px;
     width: 90%;
     max-width: 600px;
-    max-height: 90vh; /* Increased max-height slightly */
+    max-height: 90vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 20px 60px rgba(0,0,0,0.8);
     z-index: 10000;
-    margin: auto; /* Ensures it's centered */
+    margin: auto;
 }
 .close {
     color: #aaa;
