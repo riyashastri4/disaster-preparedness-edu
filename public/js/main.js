@@ -1491,7 +1491,7 @@ function reviewModule() {
 
 function closeModal() {
     if (currentModal) {
-        currentModal.style.display = 'none';
+        currentModal.classList.remove('is-visible');
         currentModal = null;
     }
 }
@@ -1859,18 +1859,11 @@ window.onerror = function(msg, url, lineNo, columnNo, error) {
 
 // --- Authentication Functions ---
 function openSignupModal() {
-    console.log('openSignupModal function called');
     const modal = document.getElementById('signup-modal');
-    console.log('Modal element:', modal);
     if (modal) {
-        modal.style.display = 'block';
+        modal.classList.add('is-visible');
         currentModal = modal;
-        console.log('Modal should now be visible');
-        // Default to signup form
         showSignupForm();
-    } else {
-        console.error('Signup modal not found!');
-        alert('Error: Signup modal not found. Please refresh the page.');
     }
 }
 
