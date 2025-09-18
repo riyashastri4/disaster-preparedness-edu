@@ -1882,6 +1882,10 @@ function showLoginForm() {
     document.getElementById('login-tab').classList.add('active');
 }
 
+// public/js/main.js
+
+// ... (existing code) ...
+
 // Email signup
 async function handleEmailSignup(event) {
     event.preventDefault();
@@ -1899,16 +1903,18 @@ async function handleEmailSignup(event) {
         const result = await response.json();
 
         if (response.ok) {
-    showNotification(`Welcome to DisasterEdu, ${result.user.username}!`);
-    updateUIForLoggedInUser(result.user);
-    // Redirect to dashboard after signup
-    window.location.href = 'dashboard.html'; 
-} else {
-            alert(`Signup failed: ${result.message}`);
+            showNotification(`✅ Welcome, ${result.user.username}! Redirecting to your dashboard...`);
+            // Redirect to the dashboard on successful signup
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        } else {
+            // Use the notification function for errors as well
+            showNotification(`❌ Signup failed: ${result.message}`, 'error');
         }
     } catch (error) {
         console.error('Signup error:', error);
-        alert('An error occurred during signup. Please try again.');
+        showNotification('⚠️ An error occurred during signup. Please try again.', 'error');
     }
 }
 
@@ -1929,18 +1935,47 @@ async function handleEmailLogin(event) {
         const result = await response.json();
 
         if (response.ok) {
-    showNotification(`Welcome back, ${result.user.username}!`);
-    updateUIForLoggedInUser(result.user);
-    // Redirect to dashboard after login
-    window.location.href = 'dashboard.html'; 
+            showNotification(`✅ Welcome back, ${result.user.username}! Redirecting...`);
+            // Redirect to the dashboard on successful login
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1500);
         } else {
-            alert(`Login failed: ${result.message}`);
+            showNotification(`❌ Login failed: ${result.message}`, 'error');
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('An error occurred during login. Please try again.');
+        showNotification('⚠️ An error occurred during login. Please try again.', 'error');
     }
 }
+
+
+// A small update to the showNotification function to handle errors
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.innerHTML = `<span>${message}</span>`;
+    
+    // Style differently for errors
+    if (type === 'error') {
+        notification.style.background = 'linear-gradient(45deg, #e74c3c, #c0392b)';
+    } else {
+        notification.style.background = 'linear-gradient(45deg, #2ecc71, #27ae60)';
+    }
+
+    notification.style.cssText += `
+        position: fixed; top: 80px; right: 20px;
+        color: white; padding: 15px 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 3000; display: flex; align-items: center; gap: 10px; font-weight: 600;
+        animation: slideIn 0.5s ease-out;`;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
 
 // Check authentication status
 async function checkAuthStatus() {
