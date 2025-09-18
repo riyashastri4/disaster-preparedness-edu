@@ -59,13 +59,13 @@
 
       const data = await res.json();
       if (res.ok && data.success) {
-        alert("✅ Login successful!");
+        alert("Login successful!");
         window.location.href = "dashboard.html"; 
       } else {
         alert("❌ " + data.message);
       }
     } catch (err) {
-      alert("⚠️ Error: " + err.message);
+      alert("Error: " + err.message);
     }
   });
 </script>
