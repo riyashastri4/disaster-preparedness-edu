@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Dashboard - Disaster Preparedness</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>DisasterEdu</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/#home" class="nav-link">Home</a>
+                <a href="/#modules" class="nav-link">Learn</a>
+                <a href="/#emergency" class="nav-link">Emergency</a>
+                <div id="user-menu" class="nav-user" style="display: none;">
+                    <span id="user-name-nav">User</span>
+                    <button onclick="logout()" class="btn btn-logout">Logout</button>
+                </div>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Welcome back, <span id="user-name-header">...</span>!</h1>
+            <p>Here is a summary of your disaster preparedness progress. Stay safe and keep learning!</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card score-card">
+                <h3>Preparedness Score</h3>
+                <div class="score-circle">
+                    <div class="circle-progress" id="score-progress-circle">
+                        <span class="score-number" id="score-number-dash">0</span>
+                    </div>
+                </div>
+                <p>Complete more modules to increase your score.</p>
+            </div>
+
+            <div class="dashboard-card badges-card">
+                <h3>Badges Earned</h3>
+                <div class="badges-grid-dash" id="badges-container-dash">
+                    </div>
+            </div>
+
+            <div class="dashboard-card modules-progress-card">
+                <h3>Module Progress</h3>
+                <div class="module-progress-list" id="module-progress-container">
+                    </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
