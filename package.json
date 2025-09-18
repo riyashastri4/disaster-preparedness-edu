@@ -12,6 +12,7 @@
     "ws": "^8.11.0",
     "bcrypt": "^5.1.0",
     "express-session": "^1.17.3",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.0"
   }
 }
