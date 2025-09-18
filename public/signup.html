@@ -16,9 +16,8 @@
                 <span>DisasterEdu</span>
             </div>
             <div class="nav-menu">
-                <a href="/#home" class="nav-link">Home</a>
-                <a href="/#modules" class="nav-link">Learn</a>
-                <a href="login.html" class="nav-link nav-link-btn">Login</a>
+                <a href="/" class="nav-link">Home</a>
+                <a href="login.html" class="nav-link">Login</a>
             </div>
         </div>
     </nav>
@@ -27,7 +26,7 @@
         <div class="auth-card">
             <h2>Join DisasterEdu</h2>
             <p>Create an account to start learning and stay prepared.</p>
-            <form id="signup-form-page">
+            <form id="signup-form" onsubmit="handleEmailSignup(event)">
                 <div class="form-group">
                     <input type="text" id="signup-username" placeholder="Username" required>
                 </div>
@@ -44,34 +43,8 @@
             </div>
         </div>
     </div>
-    
-    <script>
-        document.getElementById("signup-form-page").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const formData = {
-                username: document.getElementById('signup-username').value,
-                email: document.getElementById('signup-email').value,
-                password: document.getElementById('signup-password').value,
-            };
 
-            try {
-                const res = await fetch("/api/signup", { // Correct, relative URL
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(formData),
-                });
-
-                const data = await res.json();
-                if (res.ok) {
-                    alert("✅ Signup successful! Redirecting to login...");
-                    window.location.href = "login.html"; // Redirect to login after signup from this page
-                } else {
-                    alert("❌ " + data.message);
-                }
-            } catch (err) {
-                alert("⚠️ Error: " + err.message);
-            }
-        });
-    </script>
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>
