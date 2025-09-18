@@ -1,4 +1,3 @@
-
 // Disaster Preparedness Education System - Main JavaScript
 
 // Global State Management
@@ -18,8 +17,6 @@ const AppState = {
 };
 
 // Educational Modules Data
-// REPLACE your existing ModulesData constant with this entire block
-
 const ModulesData = {
     earthquake: {
         title: 'Earthquake Safety',
@@ -626,7 +623,6 @@ const ModulesData = {
             {
                 id: 1,
                 title: 'Introduction to First Aid',
-                // ADDED: First Aid Video
                 videoUrl: 'https://www.youtube.com/embed/0JHNvpQ9JW8?si=hTTWPJWdNjOYQmTq',
                 content: `
                     <h3>The Basics of First Aid</h3>
@@ -1030,24 +1026,21 @@ let quizScore = 0;
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     setupEventListeners();
-    initializeWebSocket(); // Add this line to start the real-time connection
+    initializeWebSocket();
     loadUserProgress();
     animateStats();
     populateLocalContacts();
 });
 
 function initializeApp() {
-    // Initialize modules
     AppState.modules = ModulesData;
     
-    // Load saved progress from localStorage
     const savedProgress = localStorage.getItem('disasterEduProgress');
     if (savedProgress) {
         Object.assign(AppState.currentUser, JSON.parse(savedProgress));
         updateUI();
     }
     
-    // Setup smooth scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -1059,12 +1052,7 @@ function initializeApp() {
     });
 }
 
-// Add this to your public/js/main.js file
-
-// REPLACE the old initializeWebSocket function with this new one
-
 function initializeWebSocket() {
-    // 1. Force a secure WebSocket connection (wss)
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}`;
     const ws = new WebSocket(wsUrl);
@@ -1086,12 +1074,11 @@ function initializeWebSocket() {
             });
         }
 
-        // 2. Start sending a "ping" every 25 seconds to keep the connection alive
         keepAliveInterval = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({ type: 'ping' }));
             }
-        }, 25000); // 25 seconds
+        }, 25000);
     };
 
     ws.onmessage = event => {
@@ -1108,13 +1095,13 @@ function initializeWebSocket() {
 
     ws.onclose = () => {
         console.log('Disconnected from WebSocket server. Attempting to reconnect...');
-        clearInterval(keepAliveInterval); // Stop the ping when disconnected
+        clearInterval(keepAliveInterval);
         setTimeout(initializeWebSocket, 5000);
     };
 
     ws.onerror = error => {
         console.error('WebSocket error:', error);
-        clearInterval(keepAliveInterval); // Stop ping on error
+        clearInterval(keepAliveInterval);
     };
 }
 
@@ -1137,12 +1124,11 @@ function stopEmergencyAlarm() {
     if (alarmOverlay && alarmAudio) {
         alarmOverlay.style.display = 'none';
         alarmAudio.pause();
-        alarmAudio.currentTime = 0; // Reset audio
+        alarmAudio.currentTime = 0;
     }
 }
 
 function setupEventListeners() {
-    // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     
@@ -1152,18 +1138,22 @@ function setupEventListeners() {
         });
     }
 
-    // --- NEW: Signup Button Event Listener ---
     const signupBtn = document.getElementById('signup-btn');
     if (signupBtn) {
         signupBtn.addEventListener('click', openSignupModal);
     }
-    
-    // --- START: CORRECTED MODAL CLOSE LOGIC ---
 
-    // Find all close buttons (X) and add a click listener to each one
+    const mobileSignupLink = document.getElementById('mobile-signup-link');
+    if (mobileSignupLink) {
+        mobileSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openSignupModal();
+            navMenu.classList.remove('active');
+        });
+    }
+    
     document.querySelectorAll('.close').forEach(button => {
         button.addEventListener('click', function() {
-            // Find the closest parent element with the class "modal" and hide it
             const modal = this.closest('.modal');
             if (modal) {
                 modal.style.display = 'none';
@@ -1171,19 +1161,14 @@ function setupEventListeners() {
         });
     });
 
-    // Add listeners to modals to also close when the gray background is clicked
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', function(event) {
-            // If the clicked element is the modal background itself, hide it
             if (event.target === this) {
                 this.style.display = 'none';
             }
         });
     });
 
-    // --- END: CORRECTED MODAL CLOSE LOGIC ---
-    
-    // Intersection Observer for animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -1197,7 +1182,6 @@ function setupEventListeners() {
     });
 }
 
-// Module Functions
 function startLearning() {
     document.querySelector('#modules').scrollIntoView({ behavior: 'smooth' });
 }
@@ -1214,13 +1198,10 @@ function startModule(moduleType) {
     currentModal = modal;
 }
 
-// REPLACE your existing generateModuleContent function with this one
-
 function generateModuleContent(moduleType, lessonIndex) {
     const module = AppState.modules[moduleType];
     const lesson = module.lessons[lessonIndex];
 
-    // Check if there is a video URL and create the video player HTML
     const videoPlayer = lesson.videoUrl ? `
         <div class="video-container">
             <iframe 
@@ -1282,23 +1263,15 @@ function previousLesson() {
 }
 
 function completeModule() {
-    // Update progress
     if (!AppState.currentUser.modulesCompleted.includes(currentModule)) {
         AppState.currentUser.modulesCompleted.push(currentModule);
         AppState.currentUser.preparednessScore += 20;
-        
-        // Award badge
         awardBadge('first-steps');
-        
-        // Update UI
         updateModuleProgress(currentModule, 100);
         updatePreparednessScore();
-        
-        // Save progress
         saveProgress();
     }
     
-    // Show completion message
     const content = document.getElementById('module-content');
     content.innerHTML = `
         <div class="completion-message">
@@ -1320,7 +1293,6 @@ function completeModule() {
     `;
 }
 
-// Quiz Functions
 function startQuiz() {
     currentQuiz = QuizData[currentModule];
     currentQuestionIndex = 0;
@@ -1371,7 +1343,6 @@ function selectAnswer(selectedIndex) {
     const question = currentQuiz.questions[currentQuestionIndex];
     const isCorrect = selectedIndex === question.correct;
     
-    // Store the answer
     quizAnswers[currentQuestionIndex] = {
         question: question.question,
         selected: selectedIndex,
@@ -1384,7 +1355,6 @@ function selectAnswer(selectedIndex) {
         quizScore++;
     }
     
-    // Show immediate feedback
     showAnswerFeedback(selectedIndex, question);
 }
 
@@ -1431,7 +1401,7 @@ function nextQuestion() {
 function showQuizResults() {
     const totalQuestions = currentQuiz.questions.length;
     const percentage = Math.round((quizScore / totalQuestions) * 100);
-    const passed = percentage >= 70; // 70% to pass
+    const passed = percentage >= 70;
     
     const content = document.getElementById('module-content');
     content.innerHTML = `
@@ -1471,26 +1441,16 @@ function showQuizResults() {
 }
 
 function completeModuleWithQuiz() {
-    // Update progress - only complete if not already completed
     if (!AppState.currentUser.modulesCompleted.includes(currentModule)) {
         AppState.currentUser.modulesCompleted.push(currentModule);
-        AppState.currentUser.preparednessScore += 25; // 25 points for completing with quiz
-        
-        // Award badge
+        AppState.currentUser.preparednessScore += 25;
         awardBadge('first-steps');
-        
-        // Update UI
         updateModuleProgress(currentModule, 100);
         updatePreparednessScore();
-        
-        // Save progress
         saveProgress();
-        
-        // Add to recent activity
         addToRecentActivity(`Completed ${AppState.modules[currentModule].title} module with quiz`);
     }
     
-    // Show completion message
     const content = document.getElementById('module-content');
     content.innerHTML = `
         <div class="completion-message">
@@ -1526,8 +1486,6 @@ function reviewModule() {
     content.innerHTML = generateModuleContent(currentModule, 0);
 }
 
-// Helper Functions
-
 function closeModal() {
     if (currentModal) {
         currentModal.style.display = 'none';
@@ -1560,7 +1518,6 @@ function simulateExtinguisherUse() {
     }, 1500);
 }
 
-// Progress and Gamification
 function updateModuleProgress(moduleType, percentage) {
     const moduleCard = document.querySelector(`[data-module="${moduleType}"]`);
     if (moduleCard) {
@@ -1593,7 +1550,6 @@ function awardBadge(badgeType) {
     if (!AppState.currentUser.badges.includes(badgeType)) {
         AppState.currentUser.badges.push(badgeType);
         
-        // Update badge UI
         const badges = document.querySelectorAll('.badge');
         badges.forEach(badge => {
             const badgeText = badge.querySelector('span').textContent.toLowerCase().replace(' ', '-');
@@ -1603,7 +1559,6 @@ function awardBadge(badgeType) {
             }
         });
         
-        // Show badge notification
         showNotification(`Badge Earned: ${badgeType.replace('-', ' ').toUpperCase()}!`);
     }
 }
@@ -1611,26 +1566,12 @@ function awardBadge(badgeType) {
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.className = 'notification';
-    notification.innerHTML = `
-        <i class="fas fa-award"></i>
-        <span>${message}</span>
-    `;
+    notification.innerHTML = `<i class="fas fa-award"></i><span>${message}</span>`;
     notification.style.cssText = `
-        position: fixed;
-        top: 80px;
-        right: 20px;
-        background: linear-gradient(45deg, #f39c12, #e67e22);
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        z-index: 3000;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 600;
-        animation: slideIn 0.5s ease-out;
-    `;
+        position: fixed; top: 80px; right: 20px; background: linear-gradient(45deg, #f39c12, #e67e22);
+        color: white; padding: 15px 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        z-index: 3000; display: flex; align-items: center; gap: 10px; font-weight: 600;
+        animation: slideIn 0.5s ease-out;`;
     
     document.body.appendChild(notification);
     
@@ -1644,14 +1585,9 @@ function addToRecentActivity(activity) {
     if (activityList) {
         const activityItem = document.createElement('div');
         activityItem.className = 'activity-item';
-        activityItem.innerHTML = `
-            <span>${activity}</span>
-            <span class="activity-time">Just now</span>
-        `;
-        
+        activityItem.innerHTML = `<span>${activity}</span><span class="activity-time">Just now</span>`;
         activityList.insertBefore(activityItem, activityList.firstChild);
         
-        // Keep only last 5 activities
         const activities = activityList.querySelectorAll('.activity-item');
         if (activities.length > 5) {
             activities[activities.length - 1].remove();
@@ -1659,7 +1595,6 @@ function addToRecentActivity(activity) {
     }
 }
 
-// Emergency Contacts
 function populateLocalContacts() {
     const localContacts = [
         { name: 'Local Police Station', number: '011-XXXXXXX' },
@@ -1691,38 +1626,31 @@ function addLocalContact() {
     }
 }
 
-// Data Persistence
 function saveProgress() {
     localStorage.setItem('disasterEduProgress', JSON.stringify(AppState.currentUser));
 }
 
 function loadUserProgress() {
-    // Update module progress bars
-    AppState.currentUser.modulesCompleted.forEach(moduleType => {
-        updateModuleProgress(moduleType, 100);
-    });
-    
-    // Update preparedness score
-    updatePreparednessScore();
-    
-    // Update badges
-    AppState.currentUser.badges.forEach(badgeType => {
-        const badges = document.querySelectorAll('.badge');
-        badges.forEach(badge => {
-            const badgeText = badge.querySelector('span').textContent.toLowerCase().replace(' ', '-');
-            if (badgeText === badgeType) {
-                badge.classList.remove('locked');
-                badge.classList.add('earned');
-            }
-        });
-    });
+    const savedProgress = localStorage.getItem('disasterEduProgress');
+    if (savedProgress) {
+        const progress = JSON.parse(savedProgress);
+        Object.assign(AppState.currentUser, progress);
+        if (!AppState.currentUser.city) {
+            AppState.currentUser.city = AppState.currentUser.region || 'Delhi';
+        }
+        updateCityDisplays(AppState.currentUser.city);
+        updateUI();
+        loadEmergencyData();
+    } else {
+        AppState.currentUser.city = 'Delhi';
+        loadEmergencyData();
+    }
 }
 
 function updateUI() {
     updatePreparednessScore();
 }
 
-// Statistics Animation
 function animateStats() {
     const stats = [
         { id: 'users-count', target: 1247, duration: 2000 },
@@ -1735,7 +1663,6 @@ function animateStats() {
         if (element) {
             let current = 0;
             const increment = stat.target / (stat.duration / 50);
-            
             const timer = setInterval(() => {
                 current += increment;
                 if (current >= stat.target) {
@@ -1748,212 +1675,44 @@ function animateStats() {
     });
 }
 
-// Add CSS animations dynamically
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    .lesson-body {
-        line-height: 1.8;
-        margin: 20px 0;
-    }
-    
-    .lesson-body h3, .lesson-body h4 {
-        color: #2c3e50;
-        margin: 20px 0 10px 0;
-    }
-    
-    .lesson-body ul {
-        margin: 10px 0 10px 30px;
-    }
-    
-    .lesson-quiz {
-        background: #f8f9fa;
-        padding: 20px;
-        border-radius: 10px;
-        margin: 20px 0;
-        border-left: 4px solid #3498db;
-    }
-    
-    .answer {
-        background: #d5f4e6;
-        padding: 10px;
-        border-radius: 5px;
-        margin-top: 10px;
-        color: #27ae60;
-    }
-    
-    .technique-steps, .pass-steps {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-        margin: 20px 0;
-    }
-    
-    .step, .pass-step {
-        background: #fff;
-        border: 2px solid #3498db;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-    }
-    
-    .step h4, .pass-step h4 {
-        color: #3498db;
-        font-size: 1.2rem;
-        margin-bottom: 10px;
-    }
-    
-    .safety-tips, .safety-rules, .precautions {
-        background: #fff3cd;
-        border-left: 4px solid #f39c12;
-        padding: 20px;
-        margin: 20px 0;
-        border-radius: 5px;
-    }
-    
-    .important {
-        background: #f8d7da;
-        border-left-color: #e74c3c;
-    }
-    
-    .completion-message, .drill-completion {
-        text-align: center;
-        padding: 40px;
-    }
-    
-    .completion-stats, .drill-feedback {
-        display: flex;
-        justify-content: space-around;
-        margin: 30px 0;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-    
-    .completion-stats .stat, .feedback-item {
-        text-align: center;
-        padding: 15px;
-        background: #f8f9fa;
-        border-radius: 10px;
-        min-width: 150px;
-    }
-    
-    .instruction-card {
-        background: #fff;
-        border: 2px solid #e74c3c;
-        border-radius: 10px;
-        padding: 30px;
-        margin: 20px 0;
-        text-align: center;
-    }
-    
-    .drill-controls {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        align-items: center;
-        flex-wrap: wrap;
-        margin-top: 20px;
-    }
-    
-    .drill-progress {
-        background: #f8f9fa;
-        padding: 10px 20px;
-        border-radius: 20px;
-        font-weight: 600;
-        color: #2c3e50;
-    }
-    
-    .timer-display {
-        text-align: center;
-        background: #2c3e50;
-        color: white;
-        padding: 15px 30px;
-        border-radius: 10px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 20px 0;
-    }
-    
-    .step-timer {
-        margin-top: 15px;
-        font-size: 0.9rem;
-        color: #7f8c8d;
-    }
-    
-    .lesson-navigation {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid #ecf0f1;
-    }
-    
-    .lesson-timer {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #7f8c8d;
-        font-size: 0.9rem;
-    }
-    
-    .lesson-progress {
-        text-align: center;
-        margin: 20px 0;
-    }
-    
-    .lesson-progress-bar {
-        background: #ecf0f1;
-        height: 6px;
-        border-radius: 10px;
-        margin-top: 10px;
-        overflow: hidden;
-    }
-    
-    .lesson-progress-fill {
-        background: linear-gradient(45deg, #3498db, #2980b9);
-        height: 100%;
-        transition: width 0.5s ease;
-    }
-    
-    .module-header {
-        text-align: center;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #ecf0f1;
-    }
-    
-    .module-header h2 {
-        color: #2c3e50;
-        margin-bottom: 15px;
-    }
-    
-    .module-header i {
-        margin-right: 10px;
-        color: #3498db;
-    }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .lesson-body { line-height: 1.8; margin: 20px 0; }
+    .lesson-body h3, .lesson-body h4 { color: #2c3e50; margin: 20px 0 10px 0; }
+    .lesson-body ul { margin: 10px 0 10px 30px; }
+    .lesson-quiz { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #3498db; }
+    .answer { background: #d5f4e6; padding: 10px; border-radius: 5px; margin-top: 10px; color: #27ae60; }
+    .technique-steps, .pass-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+    .step, .pass-step { background: #fff; border: 2px solid #3498db; border-radius: 10px; padding: 20px; text-align: center; }
+    .step h4, .pass-step h4 { color: #3498db; font-size: 1.2rem; margin-bottom: 10px; }
+    .safety-tips, .safety-rules, .precautions { background: #fff3cd; border-left: 4px solid #f39c12; padding: 20px; margin: 20px 0; border-radius: 5px; }
+    .important { background: #f8d7da; border-left-color: #e74c3c; }
+    .completion-message, .drill-completion { text-align: center; padding: 40px; }
+    .completion-stats, .drill-feedback { display: flex; justify-content: space-around; margin: 30px 0; flex-wrap: wrap; gap: 20px; }
+    .completion-stats .stat, .feedback-item { text-align: center; padding: 15px; background: #f8f9fa; border-radius: 10px; min-width: 150px; }
+    .instruction-card { background: #fff; border: 2px solid #e74c3c; border-radius: 10px; padding: 30px; margin: 20px 0; text-align: center; }
+    .drill-controls { display: flex; justify-content: center; gap: 15px; align-items: center; flex-wrap: wrap; margin-top: 20px; }
+    .drill-progress { background: #f8f9fa; padding: 10px 20px; border-radius: 20px; font-weight: 600; color: #2c3e50; }
+    .timer-display { text-align: center; background: #2c3e50; color: white; padding: 15px 30px; border-radius: 10px; font-size: 1.5rem; font-weight: bold; margin: 20px 0; }
+    .step-timer { margin-top: 15px; font-size: 0.9rem; color: #7f8c8d; }
+    .lesson-navigation { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ecf0f1; }
+    .lesson-timer { display: flex; align-items: center; gap: 8px; color: #7f8c8d; font-size: 0.9rem; }
+    .lesson-progress { text-align: center; margin: 20px 0; }
+    .lesson-progress-bar { background: #ecf0f1; height: 6px; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+    .lesson-progress-fill { background: linear-gradient(45deg, #3498db, #2980b9); height: 100%; transition: width 0.5s ease; }
+    .module-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #ecf0f1; }
+    .module-header h2 { color: #2c3e50; margin-bottom: 15px; }
+    .module-header i { margin-right: 10px; color: #3498db; }
 `;
 document.head.appendChild(style);
 
-// City Management Functions
 function openCityModal() {
     const modal = document.getElementById('city-modal');
     const currentCityDisplay = document.getElementById('current-city-display');
     
-    // Update current city display
     currentCityDisplay.textContent = AppState.currentUser.city || 'Delhi';
     
-    // Set up city button click handlers
     document.querySelectorAll('.city-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const city = this.getAttribute('data-city');
@@ -1961,7 +1720,6 @@ function openCityModal() {
         });
     });
     
-    // Set up custom city input handler
     const customInput = document.getElementById('custom-city-input');
     customInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -1979,23 +1737,12 @@ function selectCity(cityName) {
         return;
     }
     
-    // Update user's city
     AppState.currentUser.city = cityName;
-    AppState.currentUser.region = cityName; // Keep region for backward compatibility
-    
-    // Update all city displays in the UI
+    AppState.currentUser.region = cityName;
     updateCityDisplays(cityName);
-    
-    // Save to localStorage
     saveProgress();
-    
-    // Refresh emergency contacts and alerts for new city
     loadEmergencyData();
-    
-    // Show success message
     showCityChangeNotification(cityName);
-    
-    // Close modal
     closeModal();
 }
 
@@ -2013,48 +1760,24 @@ function selectCustomCity() {
 }
 
 function updateCityDisplays(cityName) {
-    // Update navigation
     const navCity = document.getElementById('current-city-nav');
     if (navCity) navCity.textContent = cityName;
-    
-    // Update emergency contacts section
     const contactsCity = document.getElementById('current-city-contacts');
     if (contactsCity) contactsCity.textContent = cityName;
-    
-    // Update alerts section
     const alertsCity = document.getElementById('current-city-alerts');
     if (alertsCity) alertsCity.textContent = cityName;
-    
-    // Update modal display
     const modalCity = document.getElementById('current-city-display');
     if (modalCity) modalCity.textContent = cityName;
 }
 
 function showCityChangeNotification(cityName) {
-    // Create notification element
     const notification = document.createElement('div');
     notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #2ecc71;
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        z-index: 10000;
-        font-weight: 600;
-        animation: slideInRight 0.3s ease;
-    `;
-    
-    notification.innerHTML = `
-        <i class="fas fa-check-circle"></i>
-        City updated to ${cityName}
-    `;
-    
+        position: fixed; top: 20px; right: 20px; background: #2ecc71; color: white;
+        padding: 15px 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 10000; font-weight: 600; animation: slideInRight 0.3s ease;`;
+    notification.innerHTML = `<i class="fas fa-check-circle"></i> City updated to ${cityName}`;
     document.body.appendChild(notification);
-    
-    // Remove after 3 seconds
     setTimeout(() => {
         notification.style.animation = 'slideOutRight 0.3s ease';
         setTimeout(() => {
@@ -2065,11 +1788,7 @@ function showCityChangeNotification(cityName) {
 
 function loadEmergencyData() {
     const currentCity = AppState.currentUser.city || 'Delhi';
-    
-    // Load local contacts for the current city
     loadLocalContacts(currentCity);
-    
-    // Load alerts for the current city
     loadCurrentAlerts(currentCity);
 }
 
@@ -2077,41 +1796,14 @@ function loadLocalContacts(cityName) {
     const contactsList = document.getElementById('local-contacts');
     if (!contactsList) return;
     
-    // Extended emergency contacts database
     const emergencyContacts = {
-        'Delhi': [
-            { name: 'Delhi Police Control Room', number: '011-23490000', type: 'police' },
-            { name: 'Delhi Fire Service', number: '011-23221122', type: 'fire' },
-            { name: 'Delhi Disaster Management', number: '011-23978350', type: 'disaster' },
-            { name: 'AIIMS Emergency', number: '011-26588500', type: 'medical' }
-        ],
-        'Mumbai': [
-            { name: 'Mumbai Police', number: '022-22621855', type: 'police' },
-            { name: 'Mumbai Fire Brigade', number: '022-22622111', type: 'fire' },
-            { name: 'BMC Disaster Cell', number: '022-22694725', type: 'disaster' },
-            { name: 'KEM Hospital Emergency', number: '022-24129884', type: 'medical' }
-        ],
-        'Bangalore': [
-            { name: 'Bangalore City Police', number: '080-22943225', type: 'police' },
-            { name: 'Bangalore Fire & Emergency', number: '080-25588888', type: 'fire' },
-            { name: 'BBMP Emergency', number: '080-22660000', type: 'disaster' },
-            { name: 'Victoria Hospital', number: '080-26700001', type: 'medical' }
-        ],
-        'Chennai': [
-            { name: 'Chennai City Police', number: '044-23452301', type: 'police' },
-            { name: 'Chennai Fire Service', number: '044-25360131', type: 'fire' },
-            { name: 'Chennai Corporation Emergency', number: '044-25619892', type: 'disaster' },
-            { name: 'General Hospital Chennai', number: '044-25281314', type: 'medical' }
-        ],
-        'Kolkata': [
-            { name: 'Kolkata Police', number: '033-22143526', type: 'police' },
-            { name: 'Kolkata Fire Brigade', number: '033-22526781', type: 'fire' },
-            { name: 'KMC Emergency', number: '033-22861221', type: 'disaster' },
-            { name: 'Medical College Emergency', number: '033-22041188', type: 'medical' }
-        ]
+        'Delhi': [ { name: 'Delhi Police Control Room', number: '011-23490000', type: 'police' }, { name: 'Delhi Fire Service', number: '011-23221122', type: 'fire' }, { name: 'Delhi Disaster Management', number: '011-23978350', type: 'disaster' }, { name: 'AIIMS Emergency', number: '011-26588500', type: 'medical' } ],
+        'Mumbai': [ { name: 'Mumbai Police', number: '022-22621855', type: 'police' }, { name: 'Mumbai Fire Brigade', number: '022-22622111', type: 'fire' }, { name: 'BMC Disaster Cell', number: '022-22694725', type: 'disaster' }, { name: 'KEM Hospital Emergency', number: '022-24129884', type: 'medical' } ],
+        'Bangalore': [ { name: 'Bangalore City Police', number: '080-22943225', type: 'police' }, { name: 'Bangalore Fire & Emergency', number: '080-25588888', type: 'fire' }, { name: 'BBMP Emergency', number: '080-22660000', type: 'disaster' }, { name: 'Victoria Hospital', number: '080-26700001', type: 'medical' } ],
+        'Chennai': [ { name: 'Chennai City Police', number: '044-23452301', type: 'police' }, { name: 'Chennai Fire Service', number: '044-25360131', type: 'fire' }, { name: 'Chennai Corporation Emergency', number: '044-25619892', type: 'disaster' }, { name: 'General Hospital Chennai', number: '044-25281314', type: 'medical' } ],
+        'Kolkata': [ { name: 'Kolkata Police', number: '033-22143526', type: 'police' }, { name: 'Kolkata Fire Brigade', number: '033-22526781', type: 'fire' }, { name: 'KMC Emergency', number: '033-22861221', type: 'disaster' }, { name: 'Medical College Emergency', number: '033-22041188', type: 'medical' } ]
     };
     
-    // Get contacts for the city (or use default national contacts)
     const contacts = emergencyContacts[cityName] || [
         { name: `${cityName} Police Station`, number: '100', type: 'police' },
         { name: `${cityName} Fire Station`, number: '101', type: 'fire' },
@@ -2119,25 +1811,16 @@ function loadLocalContacts(cityName) {
         { name: 'National Disaster Response', number: '1078', type: 'disaster' }
     ];
     
-    // Populate contacts list
     contactsList.innerHTML = contacts.map(contact => `
         <div class="contact-item">
-            <span class="contact-name">
-                <i class="fas fa-${getContactIcon(contact.type)}"></i>
-                ${contact.name}
-            </span>
+            <span class="contact-name"><i class="fas fa-${getContactIcon(contact.type)}"></i> ${contact.name}</span>
             <span class="contact-number">${contact.number}</span>
         </div>
     `).join('');
 }
 
 function getContactIcon(type) {
-    const icons = {
-        'police': 'shield-alt',
-        'fire': 'fire',
-        'medical': 'plus',
-        'disaster': 'exclamation-triangle'
-    };
+    const icons = { police: 'shield-alt', fire: 'fire', medical: 'plus', disaster: 'exclamation-triangle' };
     return icons[type] || 'phone';
 }
 
@@ -2145,24 +1828,13 @@ function loadCurrentAlerts(cityName) {
     const alertsList = document.getElementById('current-alerts');
     if (!alertsList) return;
     
-    // Sample alerts - in real implementation, this would come from an API
     const mockAlerts = {
-        'Delhi': [
-            { type: 'info', message: 'Air quality moderate today. Avoid outdoor activities if sensitive.', severity: 'low' },
-            { type: 'weather', message: 'Light rain expected in evening. Keep umbrellas ready.', severity: 'low' }
-        ],
-        'Mumbai': [
-            { type: 'weather', message: 'Heavy rain alert for next 24 hours. Avoid waterlogged areas.', severity: 'medium' },
-            { type: 'traffic', message: 'Local train delays due to weather conditions.', severity: 'low' }
-        ],
-        'Bangalore': [
-            { type: 'info', message: 'No major alerts currently. Stay prepared and informed.', severity: 'low' }
-        ]
+        'Delhi': [ { type: 'info', message: 'Air quality moderate today. Avoid outdoor activities if sensitive.', severity: 'low' }, { type: 'weather', message: 'Light rain expected in evening. Keep umbrellas ready.', severity: 'low' } ],
+        'Mumbai': [ { type: 'weather', message: 'Heavy rain alert for next 24 hours. Avoid waterlogged areas.', severity: 'medium' }, { type: 'traffic', message: 'Local train delays due to weather conditions.', severity: 'low' } ],
+        'Bangalore': [ { type: 'info', message: 'No major alerts currently. Stay prepared and informed.', severity: 'low' } ]
     };
     
-    const alerts = mockAlerts[cityName] || [
-        { type: 'info', message: `No current alerts for ${cityName}. Stay safe and prepared.`, severity: 'low' }
-    ];
+    const alerts = mockAlerts[cityName] || [ { type: 'info', message: `No current alerts for ${cityName}. Stay safe and prepared.`, severity: 'low' } ];
     
     alertsList.innerHTML = alerts.map(alert => `
         <div class="alert-item ${alert.severity}">
@@ -2173,57 +1845,16 @@ function loadCurrentAlerts(cityName) {
 }
 
 function getAlertIcon(type) {
-    const icons = {
-        'weather': 'cloud-rain',
-        'traffic': 'car',
-        'info': 'info-circle',
-        'emergency': 'exclamation-triangle'
-    };
+    const icons = { weather: 'cloud-rain', traffic: 'car', info: 'info-circle', emergency: 'exclamation-triangle' };
     return icons[type] || 'info-circle';
 }
 
-// Update the loadUserProgress function to include city
-function loadUserProgress() {
-    const savedProgress = localStorage.getItem('disasterEduProgress');
-    if (savedProgress) {
-        const progress = JSON.parse(savedProgress);
-        Object.assign(AppState.currentUser, progress);
-        
-        // Ensure city is set (for backward compatibility)
-        if (!AppState.currentUser.city) {
-            AppState.currentUser.city = AppState.currentUser.region || 'Delhi';
-        }
-        
-        // Update UI elements
-        updateCityDisplays(AppState.currentUser.city);
-        updateUI();
-        
-        // Load emergency data for current city
-        loadEmergencyData();
-    } else {
-        // Set default city and load data
-        AppState.currentUser.city = 'Delhi';
-        loadEmergencyData();
-    }
-}
-
-// Error Handling
 window.onerror = function(msg, url, lineNo, columnNo, error) {
     console.error('Error: ', msg, 'at', url, ':', lineNo, ':', columnNo);
     return false;
 };
 
-// Service Worker Registration (for offline functionality)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // Note: Service worker file would need to be created separately
-        // navigator.serviceWorker.register('/sw.js');
-    });
-}
-// ... (existing JavaScript) ...
-
-// --- NEW: Signup Modal Functions ---
-
+// --- Signup Modal Functions ---
 function openSignupModal() {
     const modal = document.getElementById('signup-modal');
     modal.style.display = 'block';
@@ -2236,32 +1867,26 @@ async function handleSignup(event) {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    const response = await fetch('/api/signup', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password }),
-    });
+    try {
+        const response = await fetch('/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password }),
+        });
 
-    const result = await response.json();
+        const result = await response.json();
 
-    if (result.success) {
-        alert('Signup successful! You can now log in.');
-        closeModal();
-    } else {
-        alert(`Signup failed: ${result.message}`);
+        if (response.ok) {
+            alert('Signup successful! You can now log in.');
+            closeModal();
+        } else {
+            alert(`Signup failed: ${result.message}`);
+        }
+    } catch (error) {
+        console.error('Signup fetch error:', error);
+        alert('An error occurred. Please check the console and try again.');
     }
 }
-
-// Service Worker Registration (for offline functionality)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        // Note: Service worker file would need to be created separately
-        // navigator.serviceWorker.register('/sw.js');
-    });
-}
-// PASTE THIS ENTIRE CODE SNIPPET AT THE END OF main.js
 
 function sendTestAlarm() {
     if (navigator.geolocation) {
@@ -2273,11 +1898,9 @@ function sendTestAlarm() {
 
             fetch('/api/trigger-alarm', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    userId: AppState.currentUser.id, // Or a unique user ID
+                    userId: AppState.currentUser.id,
                     disasterType: 'Test Disaster',
                     location: location
                 })
