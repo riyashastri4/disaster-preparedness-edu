@@ -1899,10 +1899,11 @@ async function handleEmailSignup(event) {
         const result = await response.json();
 
         if (response.ok) {
-            showNotification(`Welcome to DisasterEdu, ${result.user.username}!`);
-            updateUIForLoggedInUser(result.user);
-            closeModal();
-        } else {
+    showNotification(`Welcome to DisasterEdu, ${result.user.username}!`);
+    updateUIForLoggedInUser(result.user);
+    // Redirect to dashboard after signup
+    window.location.href = 'dashboard.html'; 
+} else {
             alert(`Signup failed: ${result.message}`);
         }
     } catch (error) {
@@ -1928,9 +1929,10 @@ async function handleEmailLogin(event) {
         const result = await response.json();
 
         if (response.ok) {
-            showNotification(`Welcome back, ${result.user.username}!`);
-            updateUIForLoggedInUser(result.user);
-            closeModal();
+    showNotification(`Welcome back, ${result.user.username}!`);
+    updateUIForLoggedInUser(result.user);
+    // Redirect to dashboard after login
+    window.location.href = 'dashboard.html'; 
         } else {
             alert(`Login failed: ${result.message}`);
         }
